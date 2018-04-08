@@ -332,7 +332,7 @@ class ElfinderConnector:
         if isinstance(download, basestring):
             download = int(download)
         
-        try:
+        try:#test
             volume = self._volume(target)
             file_ = volume.file(target)
         except (VolumeNotFoundError, FileNotFoundError): 
