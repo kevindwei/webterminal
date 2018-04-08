@@ -1,0 +1,1208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-04 15:42+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: permission/forms.py:27
+msgid "Please input a valid user."
+msgstr "请输入有效的用户名"
+
+#: permission/forms.py:38
+msgid "Please input your password"
+msgstr "请输入你的密码"
+
+#: permission/forms.py:41
+msgid "new password"
+msgstr "新密码"
+
+#: permission/forms.py:48 permission/forms.py:52
+msgid "verify your password"
+msgstr "密码验证"
+
+#: permission/forms.py:49
+msgid "please input your  password again"
+msgstr "请重新输入密码"
+
+#: permission/forms.py:60
+msgid "Please input a valid email address."
+msgstr "请输入有效的邮箱地址"
+
+#: permission/forms.py:70
+msgid "every filed required"
+msgstr "每个字段都必须填写"
+
+#: permission/forms.py:72
+msgid "your password does't the same"
+msgstr "密码不一致"
+
+#: permission/forms.py:75
+msgid "User name has been registered!"
+msgstr "用户已经被注册！"
+
+#: permission/models.py:12 webterminal/models.py:138
+msgid "User"
+msgstr "用户"
+
+#: permission/models.py:13
+msgid "Permissions"
+msgstr "权限"
+
+#: permission/models.py:14
+msgid "Server group"
+msgstr "服务器组"
+
+#: permission/models.py:15 webterminal/models.py:16 webterminal/models.py:40
+msgid "Create time"
+msgstr "创建时间"
+
+#: permission/models.py:16 webterminal/models.py:17 webterminal/models.py:41
+msgid "Update time"
+msgstr "更新时间"
+
+#: permission/models.py:23
+msgid "Can add user"
+msgstr "可新增用户"
+
+#: permission/models.py:24
+msgid "Can change user info"
+msgstr "可更新用户信息"
+
+#: permission/models.py:25
+msgid "Can delete user info"
+msgstr "可删除用户"
+
+#: permission/models.py:26
+msgid "Can view user info"
+msgstr "可查看用户信息"
+
+#: permission/models.py:27
+msgid "Can view user permissions"
+msgstr "可查看用户权限信息"
+
+#: permission/models.py:28
+msgid "Can change user permissions"
+msgstr "可更新用户权限信息"
+
+#: permission/models.py:29
+msgid "Can revoke user permissions"
+msgstr "可回收用户权限"
+
+#: permission/models.py:30
+msgid "Can add user permissions"
+msgstr "可新增用户权限"
+
+#: permission/templates/permission/permissioncreate.html:19
+msgid "Return Permission List"
+msgstr "返回用户权限列表"
+
+#: permission/templates/permission/permissioncreate.html:31
+#: permission/templates/permission/permissiondelete.html:27
+#: permission/templates/permission/permissionlist.html:31
+#: permission/templates/permission/userdelete.html:27
+#: permission/templates/permission/userlist.html:31
+#: permission/templates/permission/userregister.html:27
+#: permission/templates/permission/userupdate.html:27
+#: templates/webterminal/commandcreate.html:30
+#: templates/webterminal/commandslist.html:33
+#: templates/webterminal/credentialcreate.html:31
+#: templates/webterminal/credentiallist.html:34
+#: templates/webterminal/groupcreate.html:30
+#: templates/webterminal/grouplist.html:34
+#: templates/webterminal/servercreate.html:30
+#: templates/webterminal/serverlist.html:34
+#: templates/webterminal/sshlogslist.html:34
+msgid "Action"
+msgstr "操作"
+
+#: permission/templates/permission/permissioncreate.html:32
+#: permission/templates/permission/permissiondelete.html:28
+#: permission/templates/permission/permissionlist.html:32
+#: permission/templates/permission/userdelete.html:28
+#: permission/templates/permission/userlist.html:32
+#: permission/templates/permission/userregister.html:28
+#: permission/templates/permission/userupdate.html:28
+#: templates/webterminal/commandcreate.html:31
+#: templates/webterminal/commandslist.html:34
+#: templates/webterminal/credentialcreate.html:32
+#: templates/webterminal/credentiallist.html:35
+#: templates/webterminal/groupcreate.html:31
+#: templates/webterminal/grouplist.html:35
+#: templates/webterminal/servercreate.html:31
+#: templates/webterminal/serverlist.html:35
+#: templates/webterminal/sshlogslist.html:35
+msgid "Another action"
+msgstr "另一个操作"
+
+#: permission/templates/permission/permissioncreate.html:33
+#: permission/templates/permission/permissiondelete.html:29
+#: permission/templates/permission/permissionlist.html:33
+#: permission/templates/permission/userdelete.html:29
+#: permission/templates/permission/userlist.html:33
+#: permission/templates/permission/userregister.html:29
+#: permission/templates/permission/userupdate.html:29
+#: templates/webterminal/commandcreate.html:32
+#: templates/webterminal/commandslist.html:35
+#: templates/webterminal/credentialcreate.html:33
+#: templates/webterminal/credentiallist.html:36
+#: templates/webterminal/groupcreate.html:32
+#: templates/webterminal/grouplist.html:36
+#: templates/webterminal/servercreate.html:32
+#: templates/webterminal/serverlist.html:36
+#: templates/webterminal/sshlogslist.html:36
+msgid "Something else here"
+msgstr "其他"
+
+#: permission/templates/permission/permissioncreate.html:35
+#: permission/templates/permission/permissiondelete.html:31
+#: permission/templates/permission/permissionlist.html:35
+#: permission/templates/permission/userdelete.html:31
+#: permission/templates/permission/userlist.html:35
+#: permission/templates/permission/userregister.html:31
+#: permission/templates/permission/userupdate.html:31
+#: templates/webterminal/commandcreate.html:34
+#: templates/webterminal/commandslist.html:37
+#: templates/webterminal/credentialcreate.html:35
+#: templates/webterminal/credentiallist.html:38
+#: templates/webterminal/groupcreate.html:34
+#: templates/webterminal/grouplist.html:38
+#: templates/webterminal/servercreate.html:34
+#: templates/webterminal/serverlist.html:38
+#: templates/webterminal/sshlogslist.html:38
+msgid "Separated link"
+msgstr ""
+
+#: permission/templates/permission/permissioncreate.html:52
+#: permission/templates/permission/permissiondelete.html:51
+#: permission/templates/permission/userdelete.html:51
+#: permission/templates/permission/userregister.html:48
+#: templates/webterminal/commandcreate.html:56
+#: templates/webterminal/commandslist.html:202
+#: templates/webterminal/credentialcreate.html:58
+#: templates/webterminal/credentiallist.html:129
+#: templates/webterminal/groupcreate.html:56
+#: templates/webterminal/grouplist.html:183
+#: templates/webterminal/servercreate.html:58
+#: templates/webterminal/serverlist.html:193
+msgid "submit"
+msgstr "提交"
+
+#: permission/templates/permission/permissioncreate.html:53
+#: permission/templates/permission/userregister.html:49
+#: templates/webterminal/commandslist.html:206
+#: templates/webterminal/credentiallist.html:133
+#: templates/webterminal/credentiallist.html:200
+#: templates/webterminal/grouplist.html:187
+#: templates/webterminal/grouplist.html:316
+#: templates/webterminal/serverlist.html:197
+#: templates/webterminal/serverlist.html:327
+#: templates/webterminal/sshlogslist.html:151
+msgid "cancel"
+msgstr "取消"
+
+#: permission/templates/permission/permissiondelete.html:3
+msgid "Permission delete"
+msgstr "删除用户权限"
+
+#: permission/templates/permission/permissiondelete.html:14
+msgid "Return Permission list"
+msgstr "返回权限列表"
+
+#: permission/templates/permission/permissiondelete.html:48
+msgid "Are you sure you want to delete user permission"
+msgstr "确认删除用户权限"
+
+#: permission/templates/permission/permissionlist.html:3
+msgid "Permission list"
+msgstr "权限列表"
+
+#: permission/templates/permission/permissionlist.html:18
+#: permission/templates/permission/userlist.html:18
+#: templates/webterminal/commandslist.html:20
+#: templates/webterminal/credentiallist.html:21
+#: templates/webterminal/grouplist.html:21
+#: templates/webterminal/serverlist.html:21
+msgid "Add New"
+msgstr "新增"
+
+#: permission/templates/permission/permissionlist.html:47
+#: permission/templates/permission/userlist.html:47
+#: templates/webterminal/sshlogslist.html:49
+msgid "user name"
+msgstr "用户名"
+
+#: permission/templates/permission/permissionlist.html:48
+msgid "permissions"
+msgstr "权限"
+
+#: permission/templates/permission/permissionlist.html:49
+#: templates/webterminal/commandslist.html:49
+msgid "groups"
+msgstr "组"
+
+#: permission/templates/permission/permissionlist.html:50
+#: permission/templates/permission/userlist.html:49
+#: templates/webterminal/commandslist.html:51
+#: templates/webterminal/credentiallist.html:52
+#: templates/webterminal/grouplist.html:51
+#: templates/webterminal/serverlist.html:52
+#: templates/webterminal/sshlogslist.html:54
+msgid "action"
+msgstr "操作"
+
+#: permission/templates/permission/permissionlist.html:68
+#: templates/webterminal/commandslist.html:66
+#: templates/webterminal/credentiallist.html:63
+#: templates/webterminal/grouplist.html:65
+#: templates/webterminal/serverlist.html:63
+msgid "edit"
+msgstr "编辑"
+
+#: permission/templates/permission/permissionlist.html:69
+#: permission/templates/permission/userlist.html:58
+#: templates/webterminal/commandslist.html:67
+#: templates/webterminal/credentiallist.html:64
+#: templates/webterminal/credentiallist.html:196
+#: templates/webterminal/grouplist.html:66
+#: templates/webterminal/grouplist.html:312
+#: templates/webterminal/serverlist.html:64
+#: templates/webterminal/serverlist.html:323
+msgid "delete"
+msgstr "删除"
+
+#: permission/templates/permission/userdelete.html:3
+msgid "User delete"
+msgstr "删除用户"
+
+#: permission/templates/permission/userdelete.html:14
+#: permission/templates/permission/userupdate.html:14
+msgid "Return user list"
+msgstr "返回服务器列表"
+
+#: permission/templates/permission/userdelete.html:48
+msgid "Are you sure you want to delete user"
+msgstr "确认删除用户"
+
+#: permission/templates/permission/userlist.html:3
+msgid "User list"
+msgstr "用户列表"
+
+#: permission/templates/permission/userlist.html:48
+msgid "email"
+msgstr "邮箱"
+
+#: permission/templates/permission/userregister.html:3
+msgid "Add new user"
+msgstr "新增用户"
+
+#: permission/templates/permission/userregister.html:15
+msgid "Return user List"
+msgstr "返回用户列表"
+
+#: permission/templates/permission/userupdate.html:3
+msgid "User update"
+msgstr "更新用户信息"
+
+#: permission/views.py:58
+msgid "Create Permission"
+msgstr "新增权限"
+
+#: permission/views.py:91
+msgid "Update Permission"
+msgstr "更新权限"
+
+#: templates/admin/login.html:7
+msgid "Webterminal Login"
+msgstr "webterminal 登录"
+
+#: templates/admin/login.html:19
+msgid "Username"
+msgstr "用户名"
+
+#: templates/admin/login.html:20 webterminal/models.py:68
+msgid "Password"
+msgstr "密码"
+
+#: templates/admin/login.html:22
+msgid "Log in"
+msgstr "登录"
+
+#: templates/base.html:8
+msgid "AdminLTE 2 | Dashboard"
+msgstr "AdminLTE 2 | Dashboard"
+
+#: templates/base.html:39
+msgid "W"
+msgstr "W"
+
+#: templates/base.html:39
+msgid "T"
+msgstr "T"
+
+#: templates/base.html:41
+msgid "web"
+msgstr "web"
+
+#: templates/base.html:41
+msgid "terminal"
+msgstr "terminal"
+
+#: templates/base.html:168
+msgid "Profile"
+msgstr "概览"
+
+#: templates/base.html:171
+msgid "logout"
+msgstr "注销"
+
+#: templates/base.html:188
+msgid "Dashboard"
+msgstr "仪表盘"
+
+#: templates/base.html:194 templates/base.html:237
+#: templates/webterminal/commandexecute.html:3
+#: templates/webterminal/index.html:3
+msgid "webterminal"
+msgstr "webterminal"
+
+#: templates/base.html:195
+msgid "command execute"
+msgstr "命令执行"
+
+#: templates/base.html:196
+msgid "credential list"
+msgstr "凭证列表"
+
+#: templates/base.html:197
+msgid "server list"
+msgstr "服务器列表"
+
+#: templates/base.html:198
+msgid "group list"
+msgstr "组列表"
+
+#: templates/base.html:199 templates/webterminal/commandslist.html:4
+msgid "commands list"
+msgstr "命令列表"
+
+#: templates/base.html:200
+msgid "log list"
+msgstr "日志列表"
+
+#: templates/base.html:201
+msgid "user list"
+msgstr "用户列表"
+
+#: templates/base.html:202
+msgid "permission list"
+msgstr "权限列表"
+
+#: templates/base.html:235
+msgid "Version"
+msgstr "版本"
+
+#: templates/base.html:237
+msgid "Copyright &copy; 2014-2018"
+msgstr "Copyright &copy; 2014-2018"
+
+#: templates/base.html:237
+msgid "All rights reserved."
+msgstr "保留所有权利"
+
+#: templates/webterminal/commandcreate.html:3
+msgid "Create commands"
+msgstr "创建命令"
+
+#: templates/webterminal/commandcreate.html:18
+msgid "Return Commands List"
+msgstr "返回命令列表"
+
+#: templates/webterminal/commandcreate.html:85
+#: templates/webterminal/commandcreate.html:86
+#: templates/webterminal/commandslist.html:146
+#: templates/webterminal/commandslist.html:147
+#: templates/webterminal/commandslist.html:250
+#: templates/webterminal/commandslist.html:251
+msgid "task name"
+msgstr "任务名称"
+
+#: templates/webterminal/commandcreate.html:93
+#: templates/webterminal/commandslist.html:155
+#: templates/webterminal/commandslist.html:258
+msgid "server groups"
+msgstr "服务器组"
+
+#: templates/webterminal/commandcreate.html:96
+#: templates/webterminal/commandslist.html:158
+#: templates/webterminal/commandslist.html:261 webterminal/models.py:106
+msgid "Server group you want to execute"
+msgstr "所需执行的服务器组"
+
+#: templates/webterminal/commandcreate.html:109
+#: templates/webterminal/commandslist.html:50
+#: templates/webterminal/commandslist.html:173
+#: templates/webterminal/commandslist.html:275
+msgid "commands"
+msgstr "命令"
+
+#: templates/webterminal/commandcreate.html:112
+#: templates/webterminal/commandslist.html:177
+#: templates/webterminal/commandslist.html:278
+msgid "Input the command you need to execute"
+msgstr "输入你要执行的命令"
+
+#: templates/webterminal/commandexecute.html:44
+msgid "Task List"
+msgstr "任务列表"
+
+#: templates/webterminal/commandexecute.html:55
+#: templates/webterminal/index.html:58
+msgid "search"
+msgstr "搜索"
+
+#: templates/webterminal/commandexecute.html:69
+#: templates/webterminal/commandexecute.html:74
+#: templates/webterminal/index.html:70 templates/webterminal/index.html:75
+msgid "help info"
+msgstr "帮助信息"
+
+#: templates/webterminal/commandexecute.html:188
+#: templates/webterminal/index.html:205
+#: templates/webterminal/sshlogmonitor.html:57
+msgid "\\r\\n\\r\\n[Finished...]\\r\\n"
+msgstr "\\r\\n\\r\\n[已结束...]\\r\\n"
+
+#: templates/webterminal/commandexecute.html:254
+#: templates/webterminal/commandexecute.html:280
+#: templates/webterminal/commandexecute.html:307
+msgid "execute"
+msgstr "执行"
+
+#: templates/webterminal/commandslist.html:48
+#: templates/webterminal/credentiallist.html:49
+#: templates/webterminal/servercreate.html:87
+#: templates/webterminal/servercreate.html:88
+msgid "name"
+msgstr "名称"
+
+#: templates/webterminal/commandslist.html:65
+#: templates/webterminal/credentiallist.html:62
+#: templates/webterminal/grouplist.html:64
+#: templates/webterminal/serverlist.html:62
+msgid "detail"
+msgstr "详情"
+
+#: templates/webterminal/commandslist.html:108
+#: templates/webterminal/commandslist.html:132
+msgid "commands detail"
+msgstr "命令详情"
+
+#: templates/webterminal/commandslist.html:109
+#: templates/webterminal/commandslist.html:133
+#: templates/webterminal/commandslist.html:199
+#: templates/webterminal/credentiallist.html:106
+#: templates/webterminal/credentiallist.html:126
+#: templates/webterminal/grouplist.html:108
+#: templates/webterminal/grouplist.html:153
+#: templates/webterminal/grouplist.html:180
+#: templates/webterminal/grouplist.html:279
+#: templates/webterminal/serverlist.html:106
+#: templates/webterminal/serverlist.html:161
+#: templates/webterminal/serverlist.html:190
+#: templates/webterminal/serverlist.html:296
+msgid "Loading..."
+msgstr "加载中..."
+
+#: templates/webterminal/commandslist.html:198
+msgid "commands edit"
+msgstr "命令编辑"
+
+#: templates/webterminal/commandslist.html:301
+msgid "delete task"
+msgstr "删除任务"
+
+#: templates/webterminal/commandslist.html:302
+msgid "Are you sure to delete task "
+msgstr "确定删除任务"
+
+#: templates/webterminal/commandslist.html:305
+msgid "delete "
+msgstr "删除"
+
+#: templates/webterminal/commandslist.html:309
+msgid "cancel "
+msgstr "取消"
+
+#: templates/webterminal/credentialcreate.html:19
+msgid "Return Credential List"
+msgstr "返回凭证列表"
+
+#: templates/webterminal/credentialcreate.html:86
+#: templates/webterminal/credentialcreate.html:87
+#: templates/webterminal/credentiallist.html:239
+#: templates/webterminal/credentiallist.html:240
+#: templates/webterminal/credentiallist.html:358
+#: templates/webterminal/credentiallist.html:359
+#: templates/webterminal/serverlist.html:119
+#: templates/webterminal/serverlist.html:120
+#: templates/webterminal/serverlist.html:254
+#: templates/webterminal/serverlist.html:255
+msgid "credential name"
+msgstr "凭证名称"
+
+#: templates/webterminal/credentialcreate.html:94
+#: templates/webterminal/credentialcreate.html:95
+#: templates/webterminal/credentiallist.html:248
+#: templates/webterminal/credentiallist.html:249
+#: templates/webterminal/credentiallist.html:366
+#: templates/webterminal/credentiallist.html:367
+msgid "protocol"
+msgstr "协议"
+
+#: templates/webterminal/credentialcreate.html:108
+#: templates/webterminal/credentiallist.html:51
+#: templates/webterminal/credentiallist.html:271
+#: templates/webterminal/credentiallist.html:388
+msgid "port"
+msgstr "端口"
+
+#: templates/webterminal/credentialcreate.html:109
+#: templates/webterminal/credentiallist.html:272
+#: templates/webterminal/credentiallist.html:389
+msgid "port number"
+msgstr "端口号"
+
+#: templates/webterminal/credentialcreate.html:115
+#: templates/webterminal/credentiallist.html:50
+#: templates/webterminal/credentiallist.html:262
+#: templates/webterminal/credentiallist.html:380
+msgid "username"
+msgstr "用户名"
+
+#: templates/webterminal/credentialcreate.html:116
+#: templates/webterminal/credentiallist.html:263
+#: templates/webterminal/credentiallist.html:381
+msgid "username name"
+msgstr "用户名"
+
+#: templates/webterminal/credentialcreate.html:153
+#: templates/webterminal/credentiallist.html:303
+#: templates/webterminal/credentiallist.html:417
+msgid "proxy"
+msgstr "代理"
+
+#: templates/webterminal/credentialcreate.html:154
+#: templates/webterminal/credentiallist.html:304
+#: templates/webterminal/credentiallist.html:418
+msgid "enable proxy"
+msgstr "开启代理"
+
+#: templates/webterminal/credentialcreate.html:159
+#: templates/webterminal/credentiallist.html:309
+#: templates/webterminal/credentiallist.html:423
+msgid "Enabled"
+msgstr "开启"
+
+#: templates/webterminal/credentialcreate.html:199
+#: templates/webterminal/credentialcreate.html:200
+#: templates/webterminal/credentialcreate.html:224
+#: templates/webterminal/credentialcreate.html:225
+#: templates/webterminal/credentialcreate.html:277
+#: templates/webterminal/credentialcreate.html:278
+#: templates/webterminal/credentialcreate.html:321
+#: templates/webterminal/credentialcreate.html:322
+#: templates/webterminal/credentialcreate.html:366
+#: templates/webterminal/credentialcreate.html:367
+#: templates/webterminal/credentiallist.html:279
+#: templates/webterminal/credentiallist.html:280
+#: templates/webterminal/credentiallist.html:395
+#: templates/webterminal/credentiallist.html:396
+msgid "method"
+msgstr "方式"
+
+#: templates/webterminal/credentialcreate.html:211
+#: templates/webterminal/credentialcreate.html:246
+#: templates/webterminal/credentialcreate.html:290
+#: templates/webterminal/credentialcreate.html:335
+#: templates/webterminal/credentiallist.html:485
+#: templates/webterminal/credentiallist.html:495 webterminal/models.py:66
+msgid "password"
+msgstr "密码"
+
+#: templates/webterminal/credentialcreate.html:253
+#: templates/webterminal/credentialcreate.html:254
+#: templates/webterminal/credentialcreate.html:297
+#: templates/webterminal/credentialcreate.html:298
+#: templates/webterminal/credentialcreate.html:342
+#: templates/webterminal/credentialcreate.html:343
+#: templates/webterminal/credentiallist.html:502
+#: templates/webterminal/credentiallist.html:503 webterminal/models.py:74
+msgid "width"
+msgstr "宽度"
+
+#: templates/webterminal/credentialcreate.html:261
+#: templates/webterminal/credentialcreate.html:262
+#: templates/webterminal/credentialcreate.html:305
+#: templates/webterminal/credentialcreate.html:306
+#: templates/webterminal/credentialcreate.html:350
+#: templates/webterminal/credentialcreate.html:351
+#: templates/webterminal/credentiallist.html:511
+#: templates/webterminal/credentiallist.html:512 webterminal/models.py:75
+msgid "height"
+msgstr "高度"
+
+#: templates/webterminal/credentialcreate.html:269
+#: templates/webterminal/credentialcreate.html:270
+#: templates/webterminal/credentialcreate.html:313
+#: templates/webterminal/credentialcreate.html:314
+#: templates/webterminal/credentialcreate.html:358
+#: templates/webterminal/credentialcreate.html:359
+#: templates/webterminal/credentiallist.html:520
+#: templates/webterminal/credentiallist.html:521 webterminal/models.py:76
+msgid "dpi"
+msgstr "dpi"
+
+#: templates/webterminal/credentialcreate.html:382
+#: templates/webterminal/credentiallist.html:533
+msgid "proxy server ip"
+msgstr "代理服务器ip"
+
+#: templates/webterminal/credentialcreate.html:387
+#: templates/webterminal/credentiallist.html:538
+msgid "proxy port"
+msgstr "代理端口"
+
+#: templates/webterminal/credentialcreate.html:391
+#: templates/webterminal/credentiallist.html:542
+msgid "proxy password"
+msgstr "代理密码"
+
+#: templates/webterminal/credentiallist.html:4
+msgid "Credential list"
+msgstr "凭证列表"
+
+#: templates/webterminal/credentiallist.html:105
+msgid "Credential detail"
+msgstr "凭证详情"
+
+#: templates/webterminal/credentiallist.html:125
+msgid "Credential edit"
+msgstr "编辑凭证"
+
+#: templates/webterminal/credentiallist.html:192
+msgid "delete credential name"
+msgstr "删除凭证"
+
+#: templates/webterminal/credentiallist.html:193
+msgid "Are you sure to delete credential"
+msgstr "确定删除凭证"
+
+#: templates/webterminal/groupcreate.html:18
+msgid "Return Group List"
+msgstr "返回服务器组列表"
+
+#: templates/webterminal/groupcreate.html:85
+#: templates/webterminal/groupcreate.html:86
+#: templates/webterminal/grouplist.html:121
+#: templates/webterminal/grouplist.html:122
+#: templates/webterminal/grouplist.html:246
+#: templates/webterminal/grouplist.html:247
+msgid "Group name"
+msgstr "组名称"
+
+#: templates/webterminal/groupcreate.html:93
+#: templates/webterminal/grouplist.html:50
+#: templates/webterminal/grouplist.html:130
+#: templates/webterminal/grouplist.html:254
+msgid "servers"
+msgstr "服务器"
+
+#: templates/webterminal/groupcreate.html:95
+#: templates/webterminal/grouplist.html:133
+#: templates/webterminal/grouplist.html:256 webterminal/models.py:39
+msgid "Servers"
+msgstr "服务器"
+
+#: templates/webterminal/groupcreate.html:151
+msgid "Group"
+msgstr "组"
+
+#: templates/webterminal/groupcreate.html:151
+msgid "create success!"
+msgstr "创建成功"
+
+#: templates/webterminal/groupcreate.html:162
+#: templates/webterminal/grouplist.html:170
+#: templates/webterminal/grouplist.html:226
+#: templates/webterminal/grouplist.html:299
+#: templates/webterminal/servercreate.html:170
+#: templates/webterminal/serverlist.html:180
+#: templates/webterminal/serverlist.html:310
+#: templates/webterminal/serverlist.html:350
+msgid "Please check field"
+msgstr "请检查字段"
+
+#: templates/webterminal/groupcreate.html:162
+#: templates/webterminal/grouplist.html:170
+#: templates/webterminal/grouplist.html:226
+#: templates/webterminal/grouplist.html:299
+#: templates/webterminal/servercreate.html:170
+#: templates/webterminal/serverlist.html:180
+#: templates/webterminal/serverlist.html:310
+#: templates/webterminal/serverlist.html:350
+msgid "error"
+msgstr "错误"
+
+#: templates/webterminal/grouplist.html:4
+msgid "Group list"
+msgstr "服务器组列表"
+
+#: templates/webterminal/grouplist.html:49
+msgid "group name"
+msgstr "组名"
+
+#: templates/webterminal/grouplist.html:107
+msgid "Group information detail"
+msgstr "服务器信息详情"
+
+#: templates/webterminal/grouplist.html:179
+msgid "Group information edit"
+msgstr "服务器信息编辑"
+
+#: templates/webterminal/grouplist.html:215
+msgid "Update group info"
+msgstr "服务器信息更新"
+
+#: templates/webterminal/grouplist.html:215
+#: templates/webterminal/serverlist.html:338
+msgid "success"
+msgstr "成功"
+
+#: templates/webterminal/grouplist.html:308
+msgid "delete group"
+msgstr "删除服务器组"
+
+#: templates/webterminal/grouplist.html:309
+msgid "Are you sure to delete group"
+msgstr "确认删除服务器组"
+
+#: templates/webterminal/index.html:47
+msgid "Server List"
+msgstr "服务器列表"
+
+#: templates/webterminal/index.html:268
+msgid "connect"
+msgstr "连接"
+
+#: templates/webterminal/index.html:308
+msgid "disconnect"
+msgstr "断开"
+
+#: templates/webterminal/index.html:331 templates/webterminal/index.html:358
+msgid "This function hasn\\"
+msgstr "此功能还未"
+
+#: templates/webterminal/index.html:340
+msgid "file manager"
+msgstr "文件管理"
+
+#: templates/webterminal/servercreate.html:3
+msgid "Server create"
+msgstr "服务器创建"
+
+#: templates/webterminal/servercreate.html:18
+msgid "Return Server List"
+msgstr "返回服务器列表"
+
+#: templates/webterminal/servercreate.html:95
+#: templates/webterminal/serverlist.html:128
+#: templates/webterminal/serverlist.html:262
+msgid "hostname"
+msgstr "主机名"
+
+#: templates/webterminal/servercreate.html:96
+#: templates/webterminal/serverlist.html:129
+#: templates/webterminal/serverlist.html:263
+msgid "server hostname"
+msgstr "服务器主机名"
+
+#: templates/webterminal/servercreate.html:103
+#: templates/webterminal/servercreate.html:104
+#: templates/webterminal/serverlist.html:51
+#: templates/webterminal/serverlist.html:137
+#: templates/webterminal/serverlist.html:138
+#: templates/webterminal/serverlist.html:270
+#: templates/webterminal/serverlist.html:271 webterminal/models.py:15
+msgid "ip"
+msgstr "ip"
+
+#: templates/webterminal/servercreate.html:110
+#: templates/webterminal/servercreate.html:111
+#: templates/webterminal/serverlist.html:145
+#: templates/webterminal/serverlist.html:146
+#: templates/webterminal/serverlist.html:277
+#: templates/webterminal/serverlist.html:278
+msgid "credential"
+msgstr "凭证"
+
+#: templates/webterminal/servercreate.html:159
+msgid "Credential"
+msgstr "凭证"
+
+#: templates/webterminal/servercreate.html:159
+msgid "create success"
+msgstr "创建成功"
+
+#: templates/webterminal/serverlist.html:4
+msgid "Server list"
+msgstr "服务器列表"
+
+#: templates/webterminal/serverlist.html:49
+#: templates/webterminal/sshlogslist.html:50
+msgid "server name"
+msgstr "服务器名称 "
+
+#: templates/webterminal/serverlist.html:50
+msgid "host name"
+msgstr "主机名"
+
+#: templates/webterminal/serverlist.html:105
+msgid "Server information detail"
+msgstr "服务器信息详情"
+
+#: templates/webterminal/serverlist.html:189
+msgid "Server information edit"
+msgstr "服务器信息编辑"
+
+#: templates/webterminal/serverlist.html:319
+msgid "delete server"
+msgstr "删除服务器"
+
+#: templates/webterminal/serverlist.html:320
+msgid "Are you sure to delete server"
+msgstr "确认删除服务器"
+
+#: templates/webterminal/serverlist.html:338
+msgid "Delete server"
+msgstr "删除服务器"
+
+#: templates/webterminal/sshlogslist.html:4
+msgid "Ssh log list"
+msgstr "ssh日志列表"
+
+#: templates/webterminal/sshlogslist.html:51
+msgid "server ip"
+msgstr "服务器ip"
+
+#: templates/webterminal/sshlogslist.html:52
+#: templates/webterminal/sshlogslist.html:121
+#: templates/webterminal/sshlogslist.html:187
+msgid "start time"
+msgstr "开始时间"
+
+#: templates/webterminal/sshlogslist.html:53
+msgid "is finished"
+msgstr "是否结束"
+
+#: templates/webterminal/sshlogslist.html:68
+msgid "replay"
+msgstr "重播"
+
+#: templates/webterminal/sshlogslist.html:72
+#: templates/webterminal/sshlogslist.html:147
+msgid "kill"
+msgstr "杀掉"
+
+#: templates/webterminal/sshlogslist.html:75
+msgid "monitor"
+msgstr "监控"
+
+#: templates/webterminal/sshlogslist.html:119
+#: templates/webterminal/sshlogslist.html:185
+msgid "user"
+msgstr "用户名"
+
+#: templates/webterminal/sshlogslist.html:120
+#: templates/webterminal/sshlogslist.html:186
+msgid "server"
+msgstr "服务器"
+
+#: templates/webterminal/sshlogslist.html:121
+msgid "end time"
+msgstr "结束时间"
+
+#: templates/webterminal/sshlogslist.html:143
+msgid "kick user"
+msgstr "踢用户"
+
+#: templates/webterminal/sshlogslist.html:143
+#: templates/webterminal/sshlogslist.html:144
+msgid "out"
+msgstr "下线"
+
+#: templates/webterminal/sshlogslist.html:144
+msgid "Are you sure to kick user"
+msgstr "确认踢掉用户"
+
+#: webterminal/models.py:13
+msgid "Server name"
+msgstr "服务器名称 "
+
+#: webterminal/models.py:14
+msgid "Host name"
+msgstr "主机名"
+
+#: webterminal/models.py:27
+msgid "Can add server"
+msgstr "可新增服务器"
+
+#: webterminal/models.py:28
+msgid "Can change server info"
+msgstr "可更新服务器信息"
+
+#: webterminal/models.py:29
+msgid "Can delete server info"
+msgstr "可删除服务器"
+
+#: webterminal/models.py:30
+msgid "Can connect to server"
+msgstr "可连接至服务器"
+
+#: webterminal/models.py:31
+msgid "Can kill online user"
+msgstr "可踢掉在线用户"
+
+#: webterminal/models.py:32
+msgid "Can monitor user action"
+msgstr "可监控用户操作"
+
+#: webterminal/models.py:33
+msgid "Can view server info"
+msgstr "可查看服务器信息"
+
+#: webterminal/models.py:34
+msgid "Can manage file"
+msgstr "可管理文件"
+
+#: webterminal/models.py:38
+msgid "Server group name"
+msgstr "服务器组名"
+
+#: webterminal/models.py:48
+msgid "Can add group"
+msgstr "可新增组"
+
+#: webterminal/models.py:49
+msgid "Can change group info"
+msgstr "可更新服务器组信息"
+
+#: webterminal/models.py:50
+msgid "Can delete group info"
+msgstr "可删除服务器组信息"
+
+#: webterminal/models.py:51
+msgid "Can view group info"
+msgstr "可查看服务器信息"
+
+#: webterminal/models.py:56
+msgid "ssh-password"
+msgstr "ssh密码"
+
+#: webterminal/models.py:57
+msgid "ssh-key"
+msgstr "ssh key"
+
+#: webterminal/models.py:58
+msgid "vnc"
+msgstr "vnc"
+
+#: webterminal/models.py:59
+msgid "rdp"
+msgstr "rdp"
+
+#: webterminal/models.py:60
+msgid "telnet"
+msgstr "telnet"
+
+#: webterminal/models.py:63
+msgid "Credential name"
+msgstr "凭证名称"
+
+#: webterminal/models.py:64
+msgid "Auth user name"
+msgstr "认证用户名"
+
+#: webterminal/models.py:65
+msgid "Port"
+msgstr "端口"
+
+#: webterminal/models.py:66
+msgid "key"
+msgstr "key"
+
+#: webterminal/models.py:66
+msgid "Method"
+msgstr "方式"
+
+#: webterminal/models.py:67
+msgid "Key"
+msgstr "key"
+
+#: webterminal/models.py:69
+msgid "Proxy"
+msgstr "代理"
+
+#: webterminal/models.py:70
+msgid "Proxy ip"
+msgstr "代理ip"
+
+#: webterminal/models.py:71
+msgid "Proxy port"
+msgstr "代理端口"
+
+#: webterminal/models.py:72
+msgid "Proxy password"
+msgstr "代理密码"
+
+#: webterminal/models.py:73
+msgid "Protocol"
+msgstr "协议"
+
+#: webterminal/models.py:84
+msgid "If you choose password auth method,You must set password!"
+msgstr "如果选择密码认证方式，必须设置密码！"
+
+#: webterminal/models.py:86
+msgid "If you choose password auth method,You must make key field for blank!"
+msgstr "如果选择密码认证方式，则必须保持key字段为空！"
+
+#: webterminal/models.py:88
+msgid "If you choose key auth method,You must fill in key field!"
+msgstr "如果选择key方式，则必须填写key字段！"
+
+#: webterminal/models.py:90
+msgid "If you choose key auth method,You must make password field for blank!"
+msgstr "如果选择key认证方式，则必须保持密码字段未空！"
+
+#: webterminal/models.py:93
+msgid ""
+"If you choose auth proxy,You must fill in proxyserverip and proxyport field !"
+msgstr "如果选择代理，必须填写代理ip及代理密码！"
+
+#: webterminal/models.py:97
+msgid "Can add credential"
+msgstr "可新增凭证"
+
+#: webterminal/models.py:98
+msgid "Can change credential info"
+msgstr "可更新凭证信息"
+
+#: webterminal/models.py:99
+msgid "Can delete credential info"
+msgstr "可删除凭证"
+
+#: webterminal/models.py:100
+msgid "Can view credential info"
+msgstr "可查看凭证信息"
+
+#: webterminal/models.py:104
+msgid "Task name"
+msgstr "任务名称"
+
+#: webterminal/models.py:105
+msgid "Task commands"
+msgstr "任务命令"
+
+#: webterminal/models.py:115
+msgid "Commands sequence is not valid json type"
+msgstr "命令序列不是有效的json格式"
+
+#: webterminal/models.py:124
+msgid "Can add commands"
+msgstr "可创建命令"
+
+#: webterminal/models.py:125
+msgid "Can change commands info"
+msgstr "可更新命令信息"
+
+#: webterminal/models.py:126
+msgid "Can delete commands info"
+msgstr "可删除命令信息"
+
+#: webterminal/models.py:127
+msgid "Can view commands info"
+msgstr "可查看命令信息"
+
+#: webterminal/models.py:128
+msgid "Can execute commands"
+msgstr "可执行命令"
+
+#: webterminal/models.py:132
+msgid "Server"
+msgstr "服务器"
+
+#: webterminal/models.py:133
+msgid "Channel name"
+msgstr "频道名称"
+
+#: webterminal/models.py:134
+msgid "Log name"
+msgstr "日志名称"
+
+#: webterminal/models.py:135
+msgid "Start time"
+msgstr "开始时间"
+
+#: webterminal/models.py:136
+msgid "End time"
+msgstr "结束时间"
+
+#: webterminal/models.py:137
+msgid "Is finished"
+msgstr "是否结束"
+
+#: webterminal/models.py:139
+msgid "Width"
+msgstr "宽度"
+
+#: webterminal/models.py:140
+msgid "Height"
+msgstr "高度"
+
+#: webterminal/models.py:147
+msgid "Can delete log info"
+msgstr "可删除日志信息"
+
+#: webterminal/models.py:148
+msgid "Can view log info"
+msgstr "可查看日志信息"
+
+#: webterminal/models.py:149
+msgid "Can play record"
+msgstr "可播放录像"
+
+#: webterminal/settings.py:191
+msgid "Simple Chinese"
+msgstr "简体中文"
+
+#: webterminal/settings.py:192
+msgid "English"
+msgstr "英语"
+
+#: webterminal/views.py:58 webterminal/views.py:66 webterminal/views.py:81
+#: webterminal/views.py:158 webterminal/views.py:164 webterminal/views.py:174
+msgid "403 Forbidden"
+msgstr "403 拒绝"

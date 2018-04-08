@@ -10,7 +10,7 @@ from webterminal.interactive import interactive_shell,get_redis_instance,SshTerm
 import sys
 from django.utils.encoding import smart_unicode
 from django.core.exceptions import ObjectDoesNotExist
-from webterminal.models import ServerInfor,ServerGroup,CommandsSequence,SshLog
+from webterminal.models import ServerInfor,ServerGroup,CommandsSequence,Log
 from webterminal.sudoterminal import ShellHandlerThread
 import ast 
 import time
@@ -23,7 +23,7 @@ class webterminal(WebsocketConsumer):
     
     ssh = paramiko.SSHClient() 
     http_user = True
-    http_user_and_session = True
+    #http_user_and_session = True
     channel_session = True
     channel_session_user = True   
 
@@ -39,7 +39,7 @@ class webterminal(WebsocketConsumer):
         
         self.message.reply_channel.send({"accept":False})
         
-        audit_log=SshLog.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
+        audit_log=Log.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
         audit_log.is_finished = True
         audit_log.end_time = now()
         audit_log.save()
@@ -63,14 +63,14 @@ class webterminal(WebsocketConsumer):
                     ip = data[1]
                     width = data[2]
                     height = data[3]
-                    self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())#目的是接受不在本地Known_host文件下的主机
+                    self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                     try:
-                        data = ServerInfor.objects.get(ip=ip)#数据库没有这个ip就会报错
-                        port = data.credential.port#端口
-                        method = data.credential.method#认证方式
-                        username = data.credential.username#服务器用户名
-                        audit_log = SshLog.objects.create(user=User.objects.get(username=self.message.user),server=data,channel=self.message.reply_channel.name,width=width,height=height)
-                        audit_log.save()#保存访问记录
+                        data = ServerInfor.objects.get(ip=ip,credential__protocol__contains='ssh')
+                        port = data.credential.port
+                        method = data.credential.method
+                        username = data.credential.username
+                        audit_log = Log.objects.create(user=User.objects.get(username=self.message.user),server=data,channel=self.message.reply_channel.name,width=width,height=height)
+                        audit_log.save()
                         if method == 'password':
                             password = data.credential.password
                         else:
@@ -78,26 +78,26 @@ class webterminal(WebsocketConsumer):
                     except ObjectDoesNotExist:
                         self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mConnect to server! Server ip doesn\'t exist!\033[0m'])},immediately=True)
                         self.message.reply_channel.send({"accept":False})                        
-                    try:#连接服务器
+                    try:
                         if method == 'password':
                             self.ssh.connect(ip, port=port, username=username, password=password, timeout=3)
                         else:
                             self.ssh.connect(ip, port=port, username=username, key_filename=key, timeout=3)
-                    except socket.timeout:#超时
+                    except socket.timeout:
                         self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mConnect to server time out\033[0m'])},immediately=True)
                         self.message.reply_channel.send({"accept":False})
                         return
-                    except Exception:#无法连接服务器
+                    except Exception:
                         self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mCan not connect to server\033[0m'])},immediately=True)
                         self.message.reply_channel.send({"accept":False})
                         return
                     
-                    chan = self.ssh.invoke_shell(width=width, height=height,)#在SSH server端创建一个交互式的shell，且可以按自己的需求配置伪终端，可以在invoke_shell()函数中添加参数配置。
+                    chan = self.ssh.invoke_shell(width=width, height=height,)
                     
                     #open a new threading to handle ssh to avoid global variable bug
                     sshterminal=SshTerminalThread(self.message,chan)
-                    sshterminal.setDaemon = True#主线程退出不需要等子线程
-                    sshterminal.start()     #运行shell
+                    sshterminal.setDaemon = True
+                    sshterminal.start()     
                     
                     directory_date_time = now()
                     log_name = os.path.join('{0}-{1}-{2}'.format(directory_date_time.year,directory_date_time.month,directory_date_time.day),'{0}.json'.format(audit_log.log))
@@ -114,9 +114,9 @@ class webterminal(WebsocketConsumer):
                 else:
                     self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mUnknow command found!\033[0m'])},immediately=True)
             elif bytes:
-                self.queue().publish(self.message.reply_channel.name, json.loads(bytes)[1]) #发布
+                self.queue().publish(self.message.reply_channel.name, json.loads(bytes)[1])
         except socket.error:
-            audit_log=SshLog.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
+            audit_log=Log.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
             audit_log.is_finished = True
             audit_log.end_time = now()
             audit_log.save()

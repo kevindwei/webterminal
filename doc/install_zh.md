@@ -1,47 +1,46 @@
-# centos6安装文档
-centos6下面安装步骤  (python版本是2.7  django版本是1.11.5)  
-一、yum update  
-二、yum install -y python python-dev redis-server python-pip supervisor nginx git  
-三、cd /opt  
-四、git clone https://github.com/jimmy201602/webterminal.git  
-五、cd webterminal  
-六、pip install -r requirements.txt  
-七、python manage.py makemigrations webterminal  
-八、python manage.py migrate  
-九、安装redis  
+# centos7开发安装文档
+一、yum install epel-release
 
-linux下yum安装redis以及使用  
-1、yum install redis      --查看是否有redis   yum 源  
-2、yum install epel-release    --下载fedora的epel仓库  
+二、yum install -y python python-dev redis-server python-pip supervisor nginx git gcc python-devel
 
-3、 yum install redis    -- 安装redis数据库  
+三、cd /opt
 
-4、service redis start    --开启redis服务  
+四、git clone https://github.com/jimmy201602/webterminal.git
 
-　　redis-server /etc/redis.conf   --开启方式二  
+五、cd webterminal
 
-5、ps -ef | grep redis   -- 查看redis是否开启  
+六、pip install -r requirements.txt
 
-6、redis-cli       -- 进入redis服务  
+七、python manage.py makemigrations
 
-7、redis-cli  shutdown      --关闭服务  
+八、python manage.py migrate
 
-8、开放端口6379的防火墙  
+九、开启redis服务 service redis start
 
-/sbin/iptables -I INPUT -p tcp --dport 6379  -j ACCEPT   开启6379  
+十、编译安装Guacamole guacd服务端
+```sh
+rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
 
- /etc/rc.d/init.d/iptables save                           保存防火墙规则  
+yum clean all
+yum install epel-release -y
 
-9、使用redis  desktop manager连接redis  
+yum install -y freerdp-plugins gcc gnu-free-mono-fonts pv libjpeg-devel freerdp-devel libssh2-devel libvorbis-devel libwebp-devel pulseaudio-libs-devel libvncserver-devel libssh-devel pango-devel ffmpeg ffmpeg-devel openssl-devel dialog libtelnet-devel wget cairo-devel libpng-devel uuid-devel
 
-十、python manage.py createsuperuser  
+yum localinstall http://sourceforge.net/projects/libjpeg-turbo/files/libjpeg-turbo-official-1.5.2.x86_64.rpm -y
+ln -vfs /opt/libjpeg-turbo/include/* /usr/include/
+ln -vfs /opt/libjpeg-turbo/lib??/* /usr/lib64/
 
-十一、vim webterminal/settings.py  
-ALLOWED_HOSTS = []   #这句改为  ALLOWED_HOSTS = ['*']  
+cd /tmp
+wget http://sourceforge.net/projects/guacamole/files/current/source/guacamole-server-0.9.14.tar.gz
+tar -xvpf guacamole-server-0.9.14.tar.gz
+cd guacamole-server-0.9.14
+./configure --with-init-dir=/etc/init.d
+make && make install
+```
 
-十二、python manage.py runserver 0.0.0.0:8000  
-如果出现报错(ImportError: cannot import name RemovedInDjango19Warning)执行以下命令   
-sudo pip uninstall django           #先卸载掉之前的django版本  
+十一、运行guacd service start guacd
 
-sudo pip install django==1.11.5  
+十二、创建管理员账户python manage.py createsuperuser
 
+十三、python manage.py runserver 0.0.0.0:8000

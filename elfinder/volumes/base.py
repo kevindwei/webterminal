@@ -33,7 +33,10 @@ class ElfinderVolumeDriver(object):
         """
         Default constructor
         """
-
+        # files is in type key file value type
+        self._files = {}
+        # key label
+        self._key_label = ''
         #logger
         self.logger = logging.getLogger(__name__)
         #Volume id - used as prefix for files hashes
@@ -121,6 +124,8 @@ class ElfinderVolumeDriver(object):
             'acceptedName' : r'^[^\.].*', #<-- DONT touch this! Use constructor options to overwrite it!
             #callable to control file permissions
             'accessControl' : None,
+            #  allow  rmDir
+            'rmDir' : None,
             #default permissions. Do not set hidden/locked here - take no effect
             'defaults' : {
                 'read' : True,
@@ -743,7 +748,7 @@ class ElfinderVolumeDriver(object):
 
         return self.stat(self.copy(path, dir_, name))
     
-    def upload(self, uploaded_file, hash_dst):
+    def upload(self, uploaded_file, hash_dst, chunk_name, is_first_chunk):
         """
         Save uploaded file. 
         On success return a list of file stat information.
@@ -752,7 +757,10 @@ class ElfinderVolumeDriver(object):
         :func:`elfinder.volumes.base.ElfinderVolumeDriver.remove`
         method.
         """
-
+        if chunk_name:
+            file_name = chunk_name
+        else:
+            file_name = uploaded_file.name
         if self.command_disabled('upload'):
             raise PermissionDeniedError
         
@@ -766,7 +774,7 @@ class ElfinderVolumeDriver(object):
         if not dir_['write']:
             raise PermissionDeniedError
         
-        if not self._name_accepted(uploaded_file.name):
+        if not self._name_accepted(file_name):
             raise Exception(ElfinderErrorMessages.ERROR_INVALID_NAME)
         
         mime = uploaded_file.content_type 
@@ -792,9 +800,7 @@ class ElfinderVolumeDriver(object):
             raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_SIZE)
 
         dst = self.decode(hash_dst)
-        name = uploaded_file.name
-        test = self._join_path(dst, name)
-
+        test = self._join_path(dst, file_name)
         try:
             file_ = self.stat(test)
             #file exists
@@ -802,10 +808,13 @@ class ElfinderVolumeDriver(object):
                 if not file_['write']:
                     raise PermissionDeniedError
                 elif file_['mime'] == 'directory':
-                    raise NamedError(ElfinderErrorMessages.ERROR_NOT_REPLACE, uploaded_file.name)
-                self.remove(test)
+                    raise NamedError(ElfinderErrorMessages.ERROR_NOT_REPLACE, file_name)
+                if chunk_name and is_first_chunk:
+                    self.remove(test)
+                if not chunk_name:
+                    self.remove(test)
             else:
-                name = self._unique_name(dst, uploaded_file.name, '-', False)
+                file_name = self._unique_name(dst, file_name, '-', False)
         except os.error: #file does not exist
             pass
         
@@ -819,7 +828,7 @@ class ElfinderVolumeDriver(object):
         self._clear_cached_dir(dst)
         
         try:
-            uploaded_path = self._save_uploaded(uploaded_file, dst, name, **kwargs)
+            uploaded_path = self._save_uploaded(uploaded_file, dst, file_name, chunk_name, is_first_chunk, **kwargs)
         except:
             raise Exception(ElfinderErrorMessages.ERROR_UPLOAD_FILE_SIZE)
         
@@ -1139,10 +1148,12 @@ class ElfinderVolumeDriver(object):
         """
         Return fileinfo. Raises os.error if the path is invalid
         """
-        
-        cache_key = 'elfinder::stat::%s' % self.encode(path)
-        stat_cache = cache.get(cache_key, None)
-        root_cache = cache.get('elfinder::stat::%sroot' % self.id())
+
+        # cache_key = 'elfinder::stat::%s::%s' % (self._key_label, self.encode(path))
+        # stat_cache = cache.get(cache_key, None)
+        # root_cache = cache.get('elfinder::stat::%s::%sroot' % (self._key_label, self.id()))
+        stat_cache = None
+        root_cache = None
         
         if stat_cache is None or root_cache != self._root:
             #print cache_key, stat_cache, root_cache, self._root
@@ -1172,13 +1183,16 @@ class ElfinderVolumeDriver(object):
 
                 if stat['mime'] == 'directory': #handle directories
                     if self._options['checkSubfolders']:
-                        if 'dirs' in stat:
-                            if not stat['dirs']:
-                                del stat['dirs']
-                        elif 'alias' in stat and stat['alias'] and 'target' in stat and stat['target']:
-                            stat['dirs'] = int('dirs' in stat_cache[stat['target']]) if stat['target'] in stat_cache else int(self._subdirs(stat['target'])) 
-                        elif self._subdirs(path):
-                            stat['dirs'] = 1
+                        try:
+                            if 'dirs' in stat:
+                                if not stat['dirs']:
+                                    del stat['dirs']
+                            elif 'alias' in stat and stat['alias'] and 'target' in stat and stat['target']:
+                                stat['dirs'] = int('dirs' in stat_cache[stat['target']]) if stat['target'] in stat_cache else int(self._subdirs(stat['target']))
+                            elif self._subdirs(path):
+                                stat['dirs'] = 1
+                        except:
+                            stat['mime'] = 'application/empty'
                     else:
                         stat['dirs'] = 1
                 else: #file
@@ -1196,11 +1210,11 @@ class ElfinderVolumeDriver(object):
     
             stat_cache = stat
             
-            if self._options['cache']:
-                cache.set(cache_key, stat_cache, self._options['cache'])
-                self.logger.debug('%s: Caching STAT %s' % (self.id(), path))
-            if root_cache != self._root:
-                cache.set('elfinder::stat::%sroot' % self.id(), self._root, 60 * 60 * 24 * 10)
+            # if self._options['cache']:
+            #     cache.set(cache_key, stat_cache, self._options['cache'])
+            #     self.logger.debug('%s: Caching STAT %s' % (self.id(), path))
+            # if root_cache != self._root:
+            #     cache.set('elfinder::stat::%sroot' % self.id(), self._root, 60 * 60 * 24 * 10)
         
         return stat_cache
     
@@ -1259,7 +1273,10 @@ class ElfinderVolumeDriver(object):
         for stat in self._get_scandir(path):
             size = self._size(self._join_path(path, stat['name'])) if stat['mime'] == 'directory' and stat['read'] else stat['size']
             if (size > 0):
-                result += size
+                try:
+                    result += size
+                except TypeError:
+                    pass
 
         self._options['checkSubfolders'] = subdirs
         return result
@@ -1779,23 +1796,24 @@ class ElfinderVolumeDriver(object):
         """
         Clear the cache for this file ``path``.
         """
-        cache.delete('elfinder::stat::%s' % self.encode(path))
+        cache.delete('elfinder::stat::%s::%s' % (self._key_label, self.encode(path)))
         
     def _get_cached_dir(self, path):
         """
         Get the cached stat info for this directory ``path``, if any.
         """
-        cache_key = 'elfinder::listdir::%s' % self.encode(path)
-        dir_cache = cache.get(cache_key, None)
-        root_cache = cache.get('elfinder::stat::%sroot' % self.id())
-        
-        if dir_cache is None or root_cache != self._root:
-            dir_cache = self._scandir(path)
-            if self._options['cache']:
-                self.logger.debug('%s: Caching DIR %s' % (self.id(), path))
-                cache.set(cache_key, dir_cache, self._options['cache'])
-            if root_cache != self._root:
-                cache.set('elfinder::stat::%sroot' % self.id(), self._root, 60 * 60 * 24 * 10)
+        # cache_key = 'elfinder::listdir::%s::%s' % (self._key_label, self.encode(path))
+        # dir_cache = cache.get(cache_key, None)
+        # root_cache = cache.get('elfinder::stat::%s::%sroot' % (self._key_label, self.id()))
+        #
+        # if dir_cache is None or root_cache != self._root:
+        #     dir_cache = self._scandir(path)
+        #     if self._options['cache']:
+        #         self.logger.debug('%s: Caching DIR %s' % (self.id(), path))
+        #         cache.set(cache_key, dir_cache, self._options['cache'])
+        #     if root_cache != self._root:
+        #         cache.set('elfinder::stat::%s::%sroot' % (self._key_label, self.id()), self._root, 60 * 60 * 24 * 10)
+        dir_cache = self._scandir(path)
 
         return dir_cache
     
@@ -1803,7 +1821,7 @@ class ElfinderVolumeDriver(object):
         """
         Clear cache for this directory ``path``.
         """
-        cache.delete('elfinder::listdir::%s' % self.encode(path))
+        cache.delete('elfinder::listdir::%s::%s' % (self._key_label, self.encode(path)))
         #clear the stat record as well
         self._clear_cached_stat(path)
         
@@ -2075,7 +2093,7 @@ class ElfinderVolumeDriver(object):
         """
         raise NotImplementedError
     
-    def _save_uploaded(self, uploaded_file, dir_, name, **kwargs):
+    def _save_uploaded(self, uploaded_file, dir_, name, chunk_name, is_first_chunk, **kwargs):
         """
         Save the Django 
         `UploadedFile <https://docs.djangoproject.com/en/dev/topics/http/file-uploads/#django.core.files.uploadedfile.UploadedFile>`_

@@ -60,7 +60,9 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         and `url() <https://docs.djangoproject.com/en/dev/ref/files/storage/#django.core.files.storage.Storage.url>`_
         methods to be valid.
         """
-        
+        if "key_label" in opts['storageKwArgs'].keys():
+            self._key_label = opts['storageKwArgs']['key_label']
+            del opts['storageKwArgs']['key_label']
         if not 'storage' in opts:
             if not 'storageClass' in opts:
                 opts['storage']  = FileSystemStorage()
@@ -138,8 +140,9 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         if not 'rmDir' in self._options or not callable(self._options['rmDir']):
             if isinstance(self._options['storage'], FileSystemStorage):
                 self._options['rmDir'] = self._rmdir_callable
-            elif not 'rmdir' in self._options['disabled']:
-                self._options['disabled'].append('rmdir')
+            elif not 'rmdir' in self._options['disabled']:  # cancel delete disable directory
+                pass
+                # self._options['disabled'].append('rmdir')
 
     #*********************************************************************#
     #*                  API TO BE IMPLEMENTED IN SUB-CLASSES             *#
@@ -258,8 +261,27 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         """
         Attempt to read the file's mimetype.
         """
+        file_name = str(path.split("/")[-1]).strip()
+
+        if re.search(r'^\./proc/', path) or re.search(r'^\./sys/', path):  # handler /proc /path
+            if file_name in self._files:  # handler is files
+                try:
+                    fp = self._fopen(path)
+                    mime = magic.Magic(mime=True).from_buffer(fp.read(10))  # read 10 bytes
+                    fp.close()
+                    return mime
+                except:
+                    return "application/empty"
+
+        # not  handler /dev directory slink
+        if re.search(r'^\./dev/', path) and self._files[file_name] in 'l':
+            return "application/empty"
+
+        if file_name in self._files:
+            if self._files[file_name] not in '-l':  # is not normal file link
+                return "application/empty"
         fp = self._fopen(path)
-        mime = magic.Magic(mime=True).from_buffer(fp.read())
+        mime = magic.Magic(mime=True).from_buffer(fp.read(10))  # read 10 bytes
         fp.close()
         return mime
     
@@ -270,6 +292,7 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         """
         try:
             all_ = self._options['storage'].listdir(path)
+            self._files = all_[2]
             return map(lambda x: self._join_path(path, x), all_[0]+all_[1])
         except NotImplementedError:
             return []
@@ -397,8 +420,8 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         :ref:`setting-rmDir` callable driver option, if it is available.
         If not, it raises an ``os.error``.
         """
-        if 'rmDir' in self._options and callable(self._options['rmDir']):
-            return self._options['rmDir'](path, self._options['storage'])
+        if 'rmDir' in self._options:
+            return self._options['storage'].delete_dir(path)
         raise os.error
             
     def _rmdir_callable(self, path, storage):
@@ -428,18 +451,22 @@ class ElfinderVolumeStorage(ElfinderVolumeDriver):
         
         return path
         
-    def _save_uploaded(self, uploaded_file, dir_, name, **kwargs):
+    def _save_uploaded(self, uploaded_file, dir_, name, chunk_name, is_first_chunk, **kwargs):
         """
         Save the Django
         `UploadedFile <https://docs.djangoproject.com/en/dev/topics/http/file-uploads/#django.core.files.uploadedfile.UploadedFile>`_
         object and return its new path.
         """
         path = self._join_path(dir_, name)
-        target = self._fopen(path, 'w+')        
+        if chunk_name and is_first_chunk:
+            target = self._fopen(path, 'w+')
+        elif chunk_name:
+            target = self._fopen(path, 'a+')
+        else:
+            target = self._fopen(path, 'w+')
         for chunk in uploaded_file.chunks():
             target.write(chunk)
         target.close()
-        
         return path
     
     def _get_contents(self, path):

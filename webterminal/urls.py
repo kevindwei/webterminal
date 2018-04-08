@@ -39,6 +39,7 @@ router.register('credential', CredentialViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^guacamole/',include('guacamole.urls')),
     url(r'^$',Index.as_view(),name='index'),
     url(r'^commands/add/$',Commands.as_view(),name='commandscreate'),
     url(r'^commandexecute/$',CommandExecute.as_view(),name='commandexecute'),
@@ -59,6 +60,8 @@ urlpatterns = [
     url(r'^sshterminalmonitor/(?P<pk>[0-9]+)/',SshTerminalMonitor.as_view(),name='sshterminalmonitor'),
     url(r'^elfinder/',include('elfinder.urls')),
     url(r'^api/',include(router.urls)),
+    url(r'^permission/',include('permission.urls')),
+    url(r'^i18n/', include('django.conf.urls.i18n')), 
 ]
 
 

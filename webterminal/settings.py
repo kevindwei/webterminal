@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for webterminal project.
 
@@ -11,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +27,7 @@ SECRET_KEY = '$@naaul9f4zi*3s%bze)5cq)q5ufwi!gj5do=area84pimi9p*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,12 +43,17 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'elfinder',
-    'storages'
+    'guacamole',
+    'permission',
+    'common',
+    'guardian',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n'
             ],
         },
     },
@@ -134,12 +142,12 @@ CHANNEL_LAYERS = {
     "default": {
        "BACKEND": "asgi_redis.RedisChannelLayer",  # use redis backend
        "CONFIG": {
-           "hosts": [("192.168.10.141", 6379)],  # set redis address
+           "hosts": [("localhost", 6379)],  # set redis address
            "channel_capacity": {
                                    "http.request": 1000,
                                    "websocket.send*": 10000,
                                 },
-           "capacity": 10000,           
+           "capacity": 10000,
            },
        "ROUTING": "webterminal.routing.channel_routing",  # load routing from our routing.py file
        },
@@ -163,8 +171,29 @@ REST_FRAMEWORK = {
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
+LOCALE_PATHS = [
+                os.path.join(BASE_DIR,'locale')
+        ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 from django.conf.locale.en import formats as en_formats
 en_formats.DATETIME_FORMAT = 'Y-m-d H:i:s'
 en_formats.DATETIME_INPUT_FORMATS = 'Y-m-d H:i:s'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.sftpstorage.SFTPStorage'
+LANGUAGES = [
+    ('zh-hans', _('Simple Chinese')),
+    ('en', _('English')),
+]
+
+CHANNELS_WS_PROTOCOLS = ["guacamole"]
+
+# guacd daemon host address and port
+GUACD_HOST = '127.0.0.1'
+GUACD_PORT = '4822'

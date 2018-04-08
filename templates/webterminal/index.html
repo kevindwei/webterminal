@@ -1,5 +1,6 @@
 {% extends 'base.html'%}
-{% block title %}webterminal{% endblock %}
+{%load i18n%}
+{% block title %}{% trans 'webterminal' %}{% endblock %}
 {% load staticfiles %}
     {% block css %}
     <link rel="stylesheet" href="{% static 'plugins/xterm/xterm.css' %}"/>
@@ -43,7 +44,7 @@
         <div class="portlet box box-success"  style="overflow:scroll;height: 800px;">
             <div class="portlet-title">
                 <div class="caption">
-                    <a class="text-danger">Server List</a>
+                    <a class="text-danger">{% trans 'Server List' %}</a>
                 </div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -54,7 +55,7 @@
             </div>
             <div class="portlet-body">
                 <form id="search">
-                    <input type="search" id="q" placeholder="search"/>
+                    <input type="search" id="q" placeholder="{% trans 'search' %}"/>
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
                 <div id="server_list" class="tree-demo" role="tree"></div>
@@ -66,12 +67,12 @@
         <div class="span2 leftMenu">
             <ul class="nav nav-tabs marginBottom" id="myTab">
                 <li class="active ">
-                    <a href="#help" class="backgroundRed">help info<button class="close closeTab" type="button" >×</button></a>
+                    <a href="#help" class="backgroundRed">{% trans 'help info' %}<button class="close closeTab" type="button" >×</button></a>
                 </li>
             </ul>
         </div>
         <div class="tab-content span4">
-            <div class="tab-pane active" id="help">help info</div>
+            <div class="tab-pane active" id="help">{% trans 'help info' %}</div>
         </div>
 
     </div>
@@ -87,7 +88,7 @@
 <script src="{% static "plugins/jquery-ui/jquery-ui.js"%}"></script>
 <!-- elFinder JS (REQUIRED) -->
 <script src="{% static "elfinder/js/elfinder.min.js"%}"></script>
-
+<script type="text/javascript" src="{% static 'plugins/guacamole/all.min.js' %}"></script>
 <script type="application/javascript">
 
 
@@ -201,7 +202,7 @@
                         term.write(json_msg[1]);
                         break;
                     case "disconnect":
-                        term.write("\r\n\r\n[Finished...]\r\n");
+                        term.write("{% trans '\r\n\r\n[Finished...]\r\n' %}");
                         break;
                     case "channel_name":
                         <!--console.log(json_msg[1]);-->
@@ -243,7 +244,7 @@
                     text: "{{ server_group.name }}",
                     children: [
                         {% for server in server_group.servers.all %}
-                        {text: "{{ server.gethostname }}", icon: "fa fa-server", ip: "{{ server.ip }}", state: {selected: !0},hostname:"{{ server.hostname }}"},
+                        {text: "{{ server.gethostname }}", icon: "fa fa-server", ip: "{{ server.ip }}", state: {selected: !0},hostname:"{{ server.hostname }}",protocol: "{{ server.credential.protocol }}",id:"{{server.id}}"},
                         {% endfor %}
                     ]
                 },
@@ -260,73 +261,104 @@
             "items": function ($node) {
                 var tree = $("#server_list").jstree(true);
                 return {
+            {% if perms.webterminal.can_connect_serverinfo %}
                     "connect": {
                         "separator_before": false,
                         "separator_after": false,
-                        "label": "connect",
+                        "label": "{% trans 'connect' %}",
                         "action": function (obj) {
 
                             var tabId = $node.text; //this is id on tab content div where the
                             //get server ip
                             var ip = $node.original.ip;
-                            if ($("#"+tabId).length <= 0){
-                                $('.nav-tabs').append('<li><a href="#' + tabId + '"><button class="close closeTab" type="button" >×</button>' + tabId + '</a></li>');
-                                $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');
-                                showTab(tabId);
-                                registerCloseEvent();
-                                var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-                                var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
-                                make_terminal(document.getElementById(tabId), {rows: 40, cols: 90}, ws_path, ip);
-                            }else {
-                                showTab(tabId);
+                            var id = $node.original.id;
+                            var protocol = $node.original.protocol;
+                            if (protocol == "ssh-password" || protocol == "ssh-key"){
+                                if ($("#"+tabId).length <= 0){
+                                    $('.nav-tabs').append('<li><a href="#' + tabId + '"><button class="close closeTab" type="button" >×</button>' + tabId + '</a></li>');
+                                    $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');
+                                    showTab(tabId);
+                                    registerCloseEvent();
+                                    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+                                    var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
+                                    make_terminal(document.getElementById(tabId), {rows: 40, cols: 90}, ws_path, ip);
+                                }else {
+                                    showTab(tabId);
+                                }
+                            }else{
+                                if ($("#"+tabId).length <= 0){
+                                    $('.nav-tabs').append('<li><a href="#' + tabId + '"><button class="close closeTab" type="button" >×</button>' + tabId + '</a></li>');
+                                    <!--$('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');-->
+                                    $('.tab-content').append('<div class="tab-pane responsive" id="' +tabId + '"><iframe src="/guacamole/' + id +'/" frameborder="0" scrolling="no" onload="this.height=780;this.width=1030;this.contentWindow.focus();" onmouseover="this.contentWindow.focus();"></iframe>'+ '</div>');
+                                    showTab(tabId);
+                                    registerCloseEvent();
+                                    <!--var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";-->
+                                    <!--var ws_path = ws_scheme + '://' + window.location.host + '/guacamole/'+id+"/";-->
+                                    <!--connect_guacamole(document.getElementById(tabId),ws_path);-->
+                                }else {
+                                    showTab(tabId);
+                                }
                             }
+
                         }
-                    },
+                    },{% endif %}
                     "disconnect": {
                         "separator_before": false,
                         "separator_after": false,
-                        "label": "disconnect",
+                        "label": "{% trans 'disconnect' %}",
                         "action": function (obj) {
 //                            console.log($node);
-                            if ($("#"+$node.text).length >0){
-                                $.ajax({
-                                    type: "POST",
-                                    url: '{% url 'sshterminalkill' %}',
-                                    dataType: "json",
-                                    data: {'channel_name':$("#"+$node.text).attr('channel_name')},
-                                    success: function (data) {
+                            var protocol = $node.original.protocol;
+                            if (protocol == "ssh-password" || protocol == "ssh-key") {
+                                if ($("#"+$node.text).length >0){
+                                    $.ajax({
+                                        type: "POST",
+                                        url: '{% url 'sshterminalkill' %}',
+                                        dataType: "json",
+                                        data: {'channel_name':$("#"+$node.text).attr('channel_name')},
+                                        success: function (data) {
 
-                                        if (data['status']){
-                                            toastr["success"](data['message']);
-                                        }
-                                    },
-                                    failure: function (errMsg) {
-                                        toastr["error"](errMsg);
-                                    },
-                                });
-                            }
+                                            if (data['status']){
+                                                toastr["success"](data['message']);
+                                            }
+                                        },
+                                        failure: function (errMsg) {
+                                            toastr["error"](errMsg);
+                                        },
+                                    });
+                                }
+                            }else {
+                                toastr["error"]("{% trans 'This function hasn\'t finished!' %}");
+                            };
+
                         }
                     },
+            {% if perms.webterminal.can_filemanage_serverinfo %}
                     "file_manager": {
                         "separator_before": false,
                         "separator_after": false,
-                        "label": "file manager",
+                        "label": "{% trans 'file manager' %}",
                         "action": function (obj) {
                             var tabId = $node.text; //this is id on tab content div where the
                             //get server ip
                             var ip = $node.original.ip;
-                            if ($("#"+tabId + "_file_manager").length <= 0){
-                                $('.nav-tabs').append('<li><a href="#' + tabId + "_file_manager" + '"><button class="close closeTab" type="button" >×</button>' + tabId + ' file manager' + '</a></li>');
-                                $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '_file_manager' + '"></div>');
-                                showTab(tabId+'_file_manager');
-                                registerCloseEvent();
-                                file_manager(tabId,$node.original.hostname);
-                            }else {
-                                showTab(tabId+'_file_manager');
+                            var protocol = $node.original.protocol;
+                            if (protocol == "ssh-password" || protocol == "ssh-key") {
+                                if ($("#"+tabId + "_file_manager").length <= 0){
+                                    $('.nav-tabs').append('<li><a href="#' + tabId + "_file_manager" + '"><button class="close closeTab" type="button" >×</button>' + tabId + ' file manager' + '</a></li>');
+                                    $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '_file_manager' + '"></div>');
+                                    showTab(tabId+'_file_manager');
+                                    registerCloseEvent();
+                                    file_manager(tabId,$node.original.hostname);
+                                }else {
+                                    showTab(tabId+'_file_manager');
 
+                                }
+                            } else {
+                                toastr["error"]("{% trans 'This function hasn\'t finished!' %}");
                             }
                         }
-                    },
+                    },{% endif %}
 //                    "Create": {
 //                        "separator_before": false,
 //                        "separator_after": false,
@@ -357,13 +389,80 @@
         $("#server_list").jstree(true).search($("#q").val());
     });
     function file_manager(tabId,hostname) {
+
+                var loct = window.location.search,
+                    full_lng, locm, lng;
+                    // detect language
+                if (loct && (locm = loct.match(/lang=([a-zA-Z_-]+)/))) {
+                        full_lng = locm[1];
+                } else {
+                        full_lng = (navigator.browserLanguage || navigator.language || navigator.userLanguage);
+                }
+                lng = full_lng.substr(0,2);
+                if (lng == 'ja') lng = 'jp';
+                else if (lng == 'pt') lng = 'pt_BR';
+                else if (lng == 'zh') lng = (full_lng.substr(0,5) == 'zh-tw')? 'zh_TW' : 'zh_CN';
+
                 $('#'+tabId+'_file_manager').elfinder({
                         resizable: false,
                         height: '100%',
                         url : '/elfinder/yawd-connector/sftp/'+hostname+'/', // connector URL (REQUIRED)
-                        lang: 'en'                    // language (OPTIONAL)
+                        lang: lng,                   // language (OPTIONAL)
+                        <!--uploadMaxChunkSize: 124445261824,-->
+                        soundPath: "{% static '/elfinder/sounds' %}",
+                        baseUrl : "{% static 'elfinder/' %}",
                     });
 
             }
+</script>
+<script type="application/javascript">
+    function connect_guacamole(element,ws_path){
+        // Get display div from document
+        var display = element;
+    
+        // Instantiate client, using an HTTP tunnel for communications.
+        //http://guacamole.apache.org/doc/guacamole-common-js/Guacamole.WebSocketTunnel.html
+        var guac = new Guacamole.Client(
+           // new Guacamole.HTTPTunnel("tunnel")
+            new Guacamole.WebSocketTunnel(ws_path)
+        );
+    
+        // Add client to display div
+        display.appendChild(guac.getDisplay().getElement());
+    
+        // Error handler
+        guac.onerror = function(error) {
+            <!--alert(error);-->
+            console.log(error);
+        };
+    
+        // Connect
+        guac.connect();
+    
+        // Disconnect on close
+        window.onunload = function() {
+            guac.disconnect();
+        }
+    
+        // Mouse
+        var mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
+    
+        mouse.onmousedown =
+        mouse.onmouseup   =
+        mouse.onmousemove = function(mouseState) {
+            guac.sendMouseState(mouseState);
+        };
+    
+        // Keyboard
+        var keyboard = new Guacamole.Keyboard(document);
+    
+        keyboard.onkeydown = function (keysym) {
+            guac.sendKeyEvent(1, keysym);
+        };
+    
+        keyboard.onkeyup = function (keysym) {
+            guac.sendKeyEvent(0, keysym);
+        };
+    }
 </script>
 {% endblock %}

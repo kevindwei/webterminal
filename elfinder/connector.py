@@ -2,14 +2,18 @@ import os, re, time, urllib
 from django.utils.translation import ugettext as _
 from exceptions import ElfinderErrorMessages, VolumeNotFoundError, DirNotFoundError, FileNotFoundError, NamedError, NotAnImageError
 from utils.volumes import instantiate_driver
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+from collections import defaultdict
 
 class ElfinderConnector:
     """
     A python implementation of the 
-    `elfinder connector api v2.0  <https://github.com/Studio-42/elFinder/wiki/Client-Server-API-2.0>`_. At the moment, it supports all elfinder commands except from ``netDrivers``.
+    `elfinder connector api v2.1  <https://github.com/Studio-42/elFinder/wiki/Client-Server-API-2.1>`_. At the moment, it supports all elfinder commands except from ``netDrivers``.
     """
 
-    _version = '2.0'
+    _version = '2.1'
     _commit = 'b0144a0'
     _netDrivers = {}
     _commands = {
@@ -26,7 +30,8 @@ class ElfinderConnector:
         'rename' : { 'target' : True, 'name' : True, 'mimes' : False },
         'duplicate' : { 'targets' : True },
         'paste' : { 'dst' : True, 'targets' : True, 'cut' : False, 'mimes' : False },
-        'upload' : { 'target' : True, 'FILES' : True, 'mimes' : False, 'html' : False },
+        'upload' : { 'target' : True, 'FILES' : True, 'mimes' : False, 'html' : False, 'upload_path': False,
+                     'chunk_name': False, 'is_first_chunk': False},
         'get' : { 'target' : True },
         'put' : { 'target' : True, 'content' : '', 'mimes' : False },
         'archive' : { 'targets' : True, 'type_' : True, 'mimes' : False },
@@ -39,7 +44,7 @@ class ElfinderConnector:
         'netmount'  : { 'protocol' : True, 'host' : True, 'path' : False, 'port' : False, 'user' : True, 'pass' : True, 'alias' : False, 'options' : False}
     }
 
-    def __init__(self, opts, session = None):
+    def __init__(self, opts, u_id, session = None):
 
         if not 'roots' in opts:
             opts['roots'] = []
@@ -52,23 +57,23 @@ class ElfinderConnector:
         self._debug = 'debug' in opts and opts['debug'] 
         self._uploadDebug = ''
         self._mountErrors = []
+        self.u_id = u_id
         
         #TODO: Use signals instead of the original connector's binding mechanism
 
         #for root in self.getNetVolumes():
         #    opts['roots'].append(root)
-
-        for o in opts['roots']:
-
+        for o in opts['roots'][self.u_id]:
             try:
-                volume = instantiate_driver(o) #ElfinderVolumeLocalFileSystem，ElfinderVolumeStorage
+                volume = instantiate_driver(o)
             except Exception as e:
                 self._mountErrors.append(e.__unicode__())
                 continue
 
-            id_ = volume.id()#id
+            id_ = volume.id()
             self._volumes[id_] = volume
-            if not self._default and volume.is_readable():#若self._default没有赋值，就。
+
+            if not self._default and volume.is_readable():
                 self._default = self._volumes[id_]
 
         self._loaded = (self._default is not None)
@@ -127,9 +132,8 @@ class ElfinderConnector:
     def execute(self, cmd, **kwargs):
         """
         Exec command and return result
-        kwargs：前端的参数
-        """        
-        if not self._loaded:#判断是否有volume类
+        """
+        if not self._loaded:
             return { 'error' : self.error(ElfinderErrorMessages.ERROR_CONF, ElfinderErrorMessages.ERROR_CONF_NO_VOL)}
         
         if not self.commandExists(cmd):
@@ -137,16 +141,16 @@ class ElfinderConnector:
         
         #check all required arguments are provided
         for arg, req in self.commandArgsList(cmd).items():
-            if req and (not arg in kwargs or not kwargs[arg]):#判断kwargs里面是否有对应的arg
+            if req and (not arg in kwargs or not kwargs[arg]):
                 return {'error' : self.error(ElfinderErrorMessages.ERROR_INV_PARAMS, cmd)}
         
         #set mimes filter and pop mimes from the arguments list
         if 'mimes' in kwargs:
-            for id_ in self._volumes:#id_为volume类
-                self._volumes[id_].set_mimes_filter(kwargs['mimes']) #Set mimetypes allowed to display to the client
-            kwargs.pop('mimes')#设置完，移除
+            for id_ in self._volumes:
+                self._volumes[id_].set_mimes_filter(kwargs['mimes'])
+            kwargs.pop('mimes')
 
-        debug = self._debug or ('debug' in kwargs and int(kwargs['debug']))#前端request里面的debug或setings里面的debug
+        debug = self._debug or ('debug' in kwargs and int(kwargs['debug']))
         #remove debug kewyord argument  
         if 'debug' in kwargs:
             kwargs.pop('debug')
@@ -171,7 +175,6 @@ class ElfinderConnector:
                 'volumes' : [v.debug() for v in self._volumes.values()],
                 'mountErrors' : self._mountErrors
             }
-
         return result
 
     def _open(self, target='', init=False, tree=False):
@@ -414,9 +417,17 @@ class ElfinderConnector:
             volume = self._volume(target)
         except VolumeNotFoundError:
             return { 'error' : self.error(ElfinderErrorMessages.ERROR_MKDIR, name, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target)}
-
         try:
-            return { 'added' : [volume.mkdir(target, name)] }
+            result = {'added': []}
+            for dirs in name:
+                try:
+                    if str(dirs).startswith('/'):
+                        dirs = dirs[1:]
+                    dir_ = volume.mkdir(target, dirs)
+                    result['added'].append(dir_)
+                except Exception, e:
+                    result['warning'] = self.error(ElfinderErrorMessages.ERROR_UPLOAD_FILE, dirs, e)
+            return result
         except NamedError as e:
             return { 'error' : self.error(e, e.name, ElfinderErrorMessages.ERROR_MKDIR) }
         except Exception as e:
@@ -510,24 +521,21 @@ class ElfinderConnector:
 
         return result
     
-    def _upload(self, target, FILES, html=False):
+    def _upload(self, target, FILES, html=False, upload_path=False, chunk_name=False, is_first_chunk=False):
         """
         **Command**: Save uploaded files. This method should not be invoked 
         directly, the :meth:`elfinder.connector.ElfinderConnector.execute`
         method must be used.
         """
-        
         if isinstance(html, basestring):
             html = int(html)
         
         header = { 'Content-Type' : 'text/html; charset=utf-8' } if html else {}
         result = { 'added' : [], 'header' : header }
-
         try:
             files = FILES.getlist('upload[]')
         except KeyError:
             files = []
-
         if not isinstance(files, list) or not files:
             return { 'error' : self.error(ElfinderErrorMessages.ERROR_UPLOAD, ElfinderErrorMessages.ERROR_UPLOAD_NO_FILES), 'header' : header }
 
@@ -535,16 +543,41 @@ class ElfinderConnector:
             volume = self._volume(target)
         except VolumeNotFoundError:
             return { 'error' : self.error(ElfinderErrorMessages.ERROR_UPLOAD, ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % target), 'header' : header }
-        
-        for uploaded_file in files:
+        if not upload_path:  # not is directory
+            for uploaded_file in files:
+                try:
+                    file_ = volume.upload(uploaded_file, target, chunk_name, is_first_chunk)
+                    result['added'].append(file_)
+                except Exception, e:
+                    result['warning'] = self.error(ElfinderErrorMessages.ERROR_UPLOAD_FILE, uploaded_file.name, e)
+                    self._uploadDebug = 'Upload error: Django handler error'
+        else:  # directory
             try:
-                file_ = volume.upload(uploaded_file, target)
-                result['added'].append(file_)
-            except Exception, e:
-                result['warning'] = self.error(ElfinderErrorMessages.ERROR_UPLOAD_FILE, uploaded_file.name, e)
-                self._uploadDebug = 'Upload error: Django handler error'
-
+                all_ = defaultdict(list)
+                for key, value in [(v, i) for i, v in enumerate(upload_path)]:  # upload directory list
+                    if key.startswith('/'):
+                        key = (os.path.split(key[1:]))[0]  # get path
+                    all_[key].append(value)
+            except Exception as e:
+                return {'error': 'get directory error, %s' % e, 'header': header}
+            for item in all_.keys():
+                real_path = "%s/%s" % (volume.decode(target), item)  # get real path
+                new_target = volume.encode(real_path)  # get new target
+                try:
+                    volume = self._volume(new_target)  # get volume object
+                except VolumeNotFoundError:
+                    return {'error': self.error(ElfinderErrorMessages.ERROR_UPLOAD,
+                                                ElfinderErrorMessages.ERROR_TRGDIR_NOT_FOUND, '#%s' % new_target),
+                            'header': header}
+                for file_index in all_[item]:
+                    try:
+                        file_ = volume.upload(files[file_index], new_target, chunk_name, is_first_chunk)
+                        result['added'].append(file_)
+                    except Exception, e:
+                        result['warning'] = self.error(ElfinderErrorMessages.ERROR_UPLOAD_FILE, uploaded_file.name, e)
+                        self._uploadDebug = 'Upload error: Django handler error'
         return result
+
 
     def _paste(self, targets, dst, cut=False):
         """
