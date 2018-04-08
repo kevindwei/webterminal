@@ -75,26 +75,26 @@ def posix_shell(chan,channel,log_name=None,width=90,height=40):
         while True:
             try:               
                 x = u(chan.recv(1024))
-                if len(x) == 0:
+                if len(x) == 0:#没内容就断开
                     channel_layer.send(channel, {'text': json.dumps(['disconnect',smart_unicode('\r\n*** EOF\r\n')]) })
                     break             
                 now = time.time()
                 delay = now - last_write_time['last_activity_time']
                 last_write_time['last_activity_time'] = now                
-                if x == "exit\r\n" or x == "logout\r\n" or x == 'logout':
+                if x == "exit\r\n" or x == "logout\r\n" or x == 'logout':#用户输入这几个退出
                     chan.close()
                 else:
                     if isinstance(x,unicode):
-                        stdout.append([delay,x])
+                        stdout.append([delay,x])#添加unicode格式的内容进列表
                     else:
                         stdout.append([delay,codecs.getincrementaldecoder('UTF-8')('replace').decode(x)])
                 if isinstance(x,unicode):
                     channel_layer.send(channel, {'text': json.dumps(['stdout',x]) })
                 else:
-                    channel_layer.send(channel, {'text': json.dumps(['stdout',smart_unicode(x)]) })
+                    channel_layer.send(channel, {'text': json.dumps(['stdout',smart_unicode(x)]) })#中文转换成unicode
                 #send message to monitor group
-                if log_name:
-                    channel_layer.send_group(u'monitor-{0}'.format(log_name.rsplit('/')[1].rsplit('.json')[0]), {'text': json.dumps(['stdout',smart_unicode(x)]) })
+                if log_name:#{0}-{1}-{2}.json
+                    channel_layer.send_group(u'monitor-{0}'.format(log_name.rsplit('\\')[1].rsplit('.json')[0]), {'text': json.dumps(['stdout',smart_unicode(x)]) })
             except socket.timeout:
                 pass
             except Exception,e:
@@ -137,13 +137,13 @@ class SshTerminalThread(threading.Thread):
         self._stop_event = threading.Event()
         self.message = message
         self.queue = self.redis_queue()
-        self.chan = chan
+        self.chan = chan #ssh交互式shell
         
     def stop(self):
-        self._stop_event.set()
+        self._stop_event.set()#将“Flag”设置为True
 
     def stopped(self):
-        return self._stop_event.is_set()
+        return self._stop_event.is_set()#返回真假
     
     def redis_queue(self):
         redis_instance = get_redis_instance()
@@ -169,16 +169,16 @@ class SshTerminalThread(threading.Thread):
                 if isinstance(data,(list,tuple)):
                     if data[0] == 'close':
                         print 'close threading'
-                        self.chan.close()
-                        self.stop()
+                        self.chan.close()#关闭shell
+                        self.stop()#关闭线程
                     elif data[0] == 'set_size':
-                        self.chan.resize_pty(width=data[3], height=data[4])
+                        self.chan.resize_pty(width=data[3], height=data[4])#设置终端大小
                         break
                     elif data[0] in ['stdin','stdout']:
                         self.chan.send(data[1])
                         
                 elif isinstance(data,(int,long)):
-                    if data == 1 and first_flag:
+                    if data == 1 and first_flag:#第一次发送数据
                         first_flag = False
                     else:
                         self.chan.send(str(data))

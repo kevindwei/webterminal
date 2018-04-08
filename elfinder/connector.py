@@ -61,14 +61,14 @@ class ElfinderConnector:
         for o in opts['roots']:
 
             try:
-                volume = instantiate_driver(o)
+                volume = instantiate_driver(o) #ElfinderVolumeLocalFileSystem，ElfinderVolumeStorage
             except Exception as e:
                 self._mountErrors.append(e.__unicode__())
                 continue
 
-            id_ = volume.id()
+            id_ = volume.id()#id
             self._volumes[id_] = volume
-            if not self._default and volume.is_readable():
+            if not self._default and volume.is_readable():#若self._default没有赋值，就。
                 self._default = self._volumes[id_]
 
         self._loaded = (self._default is not None)
@@ -127,8 +127,9 @@ class ElfinderConnector:
     def execute(self, cmd, **kwargs):
         """
         Exec command and return result
+        kwargs：前端的参数
         """        
-        if not self._loaded:
+        if not self._loaded:#判断是否有volume类
             return { 'error' : self.error(ElfinderErrorMessages.ERROR_CONF, ElfinderErrorMessages.ERROR_CONF_NO_VOL)}
         
         if not self.commandExists(cmd):
@@ -136,20 +137,19 @@ class ElfinderConnector:
         
         #check all required arguments are provided
         for arg, req in self.commandArgsList(cmd).items():
-            if req and (not arg in kwargs or not kwargs[arg]):
+            if req and (not arg in kwargs or not kwargs[arg]):#判断kwargs里面是否有对应的arg
                 return {'error' : self.error(ElfinderErrorMessages.ERROR_INV_PARAMS, cmd)}
         
         #set mimes filter and pop mimes from the arguments list
         if 'mimes' in kwargs:
-            for id_ in self._volumes:
-                self._volumes[id_].set_mimes_filter(kwargs['mimes'])
-            kwargs.pop('mimes')
+            for id_ in self._volumes:#id_为volume类
+                self._volumes[id_].set_mimes_filter(kwargs['mimes']) #Set mimetypes allowed to display to the client
+            kwargs.pop('mimes')#设置完，移除
 
-        debug = self._debug or ('debug' in kwargs and int(kwargs['debug']))
+        debug = self._debug or ('debug' in kwargs and int(kwargs['debug']))#前端request里面的debug或setings里面的debug
         #remove debug kewyord argument  
         if 'debug' in kwargs:
             kwargs.pop('debug')
-
         result = getattr(self, '_%s' % cmd)(**kwargs)
         
         #checked for removed items as these are not directly returned
