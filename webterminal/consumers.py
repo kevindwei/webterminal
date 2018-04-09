@@ -46,8 +46,9 @@ class webterminal(WebsocketConsumer):
         self.close()
     
     def queue(self):
+        """获取redis"""
         queue = get_redis_instance()
-        channel = queue.pubsub()
+        channel = queue.pubsub()#订阅
         return queue
     
     def closessh(self):

@@ -33,7 +33,7 @@ import traceback
 
 def get_redis_instance():
     from webterminal.asgi import channel_layer    
-    return channel_layer._connection_list[0]
+    return channel_layer._connection_list[0]#获取backends数据,即是redis
 
 def mkdir_p(path):
     """
