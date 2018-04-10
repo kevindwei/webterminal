@@ -66,7 +66,7 @@ class CustomeFloatEncoder(json.JSONEncoder):
         return json.JSONEncoder.encode(self, obj)
 
 def posix_shell(chan,channel,log_name=None,width=90,height=40):
-    """实现shell
+    """实现shell的内容发送，和发送给监控组,记录日志和关闭shell
         chan:ssh的shell
     """
     from webterminal.asgi import channel_layer
@@ -118,9 +118,9 @@ def posix_shell(chan,channel,log_name=None,width=90,height=40):
                 },
             'stdout':list(map(lambda frame: [round(frame[0], 6), frame[1]], stdout))
             }
-        mkdir_p('/'.join(os.path.join(MEDIA_ROOT,log_name).rsplit('/')[0:-1]))
+        mkdir_p('/'.join(os.path.join(MEDIA_ROOT,log_name).rsplit('/')[0:-1]))#创建log目录
         with open(os.path.join(MEDIA_ROOT,log_name), "a") as f:
-            f.write(json.dumps(attrs, ensure_ascii=True,cls=CustomeFloatEncoder,indent=2))
+            f.write(json.dumps(attrs, ensure_ascii=True,cls=CustomeFloatEncoder,indent=2))#操作写进本地目录
         
         audit_log=Log.objects.get(channel=channel,log=log_name.rsplit('/')[-1].rsplit('.json')[0])
         audit_log.is_finished = True
@@ -129,7 +129,7 @@ def posix_shell(chan,channel,log_name=None,width=90,height=40):
         #hand ssh terminal exit
         queue = get_redis_instance()
         redis_channel = queue.pubsub()
-        queue.publish(channel, json.dumps(['close']))
+        queue.publish(channel, json.dumps(['close']))#发布关闭
 
 class SshTerminalThread(threading.Thread):
     """Thread class with a stop() method. The thread itself has to check

@@ -102,6 +102,7 @@ class webterminal(WebsocketConsumer):
                     sshterminal.start()#开启线程
                     
                     directory_date_time = now()
+                    #回访文件json格式，给asciinema调用
                     log_name = os.path.join('{0}-{1}-{2}'.format(directory_date_time.year,directory_date_time.month,directory_date_time.day),'{0}.json'.format(audit_log.log))
                     
                     #interactive_shell(chan,self.message.reply_channel.name,log_name=log_name,width=width,height=height)
