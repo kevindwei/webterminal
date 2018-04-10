@@ -29,21 +29,21 @@ class webterminal(WebsocketConsumer):
 
     
     def connect(self, message):
-        self.message.reply_channel.send({"accept": True})     
+        self.message.reply_channel.send({"accept": True})#握手
         #permission auth
-        self.message.reply_channel.send({"text":json.dumps(['channel_name',self.message.reply_channel.name])},immediately=True)
+        self.message.reply_channel.send({"text":json.dumps(['channel_name',self.message.reply_channel.name])},immediately=True)#发送频道名字
         
     def disconnect(self, message):
         #close threading
         self.closessh()
         
-        self.message.reply_channel.send({"accept":False})
+        self.message.reply_channel.send({"accept":False})#拒绝握手
         
         audit_log=Log.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
         audit_log.is_finished = True
         audit_log.end_time = now()
         audit_log.save()
-        self.close()
+        self.close()#调用websockets的close实现最终关闭
     
     def queue(self):
         """获取redis"""
@@ -78,12 +78,13 @@ class webterminal(WebsocketConsumer):
                             key = data.credential.key
                     except ObjectDoesNotExist:
                         self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mConnect to server! Server ip doesn\'t exist!\033[0m'])},immediately=True)
-                        self.message.reply_channel.send({"accept":False})                        
+                        self.message.reply_channel.send({"accept":False})
+
                     try:
                         if method == 'password':
-                            self.ssh.connect(ip, port=port, username=username, password=password, timeout=3)
+                            self.ssh.connect(ip, port=port, username=username, password=password, timeout=3)#通过密码连接
                         else:
-                            self.ssh.connect(ip, port=port, username=username, key_filename=key, timeout=3)
+                            self.ssh.connect(ip, port=port, username=username, key_filename=key, timeout=3)#通过key连接
                     except socket.timeout:
                         self.message.reply_channel.send({"text":json.dumps(['stdout','\033[1;3;31mConnect to server time out\033[0m'])},immediately=True)
                         self.message.reply_channel.send({"accept":False})
@@ -93,12 +94,12 @@ class webterminal(WebsocketConsumer):
                         self.message.reply_channel.send({"accept":False})
                         return
                     
-                    chan = self.ssh.invoke_shell(width=width, height=height,)
+                    chan = self.ssh.invoke_shell(width=width, height=height,)#设置终端大小
                     
                     #open a new threading to handle ssh to avoid global variable bug
                     sshterminal=SshTerminalThread(self.message,chan)
                     sshterminal.setDaemon = True
-                    sshterminal.start()     
+                    sshterminal.start()#开启线程
                     
                     directory_date_time = now()
                     log_name = os.path.join('{0}-{1}-{2}'.format(directory_date_time.year,directory_date_time.month,directory_date_time.day),'{0}.json'.format(audit_log.log))
@@ -107,7 +108,7 @@ class webterminal(WebsocketConsumer):
                     interactivessh = InterActiveShellThread(chan,self.message.reply_channel.name,log_name=log_name,width=width,height=height)
                     interactivessh.setDaemon = True
                     interactivessh.start()
-                    
+
                 elif data[0] in ['stdin','stdout']:
                     self.queue().publish(self.message.reply_channel.name, json.loads(text)[1])
                 elif data[0] == u'set_size':
@@ -117,6 +118,7 @@ class webterminal(WebsocketConsumer):
             elif bytes:
                 self.queue().publish(self.message.reply_channel.name, json.loads(bytes)[1])
         except socket.error:
+            #socket问题就记录下来
             audit_log=Log.objects.get(user=User.objects.get(username=self.message.user),channel=self.message.reply_channel.name)
             audit_log.is_finished = True
             audit_log.end_time = now()
@@ -124,6 +126,7 @@ class webterminal(WebsocketConsumer):
             self.closessh()
             self.close()
         except Exception,e:
+            #代码问题
             import traceback
             print traceback.print_exc()
             self.closessh()

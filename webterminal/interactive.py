@@ -66,6 +66,9 @@ class CustomeFloatEncoder(json.JSONEncoder):
         return json.JSONEncoder.encode(self, obj)
 
 def posix_shell(chan,channel,log_name=None,width=90,height=40):
+    """实现shell
+        chan:ssh的shell
+    """
     from webterminal.asgi import channel_layer
     stdout = list()
     begin_time = time.time()
@@ -136,7 +139,7 @@ class SshTerminalThread(threading.Thread):
         super(SshTerminalThread, self).__init__()
         self._stop_event = threading.Event()
         self.message = message
-        self.queue = self.redis_queue()
+        self.queue = self.redis_queue()#订阅的队列
         self.chan = chan #ssh交互式shell
         
     def stop(self):
@@ -147,8 +150,8 @@ class SshTerminalThread(threading.Thread):
     
     def redis_queue(self):
         redis_instance = get_redis_instance()
-        redis_sub = redis_instance.pubsub()
-        redis_sub.subscribe(self.message.reply_channel.name)
+        redis_sub = redis_instance.pubsub()#查看订阅发布
+        redis_sub.subscribe(self.message.reply_channel.name)#订阅
         return redis_sub
             
     def run(self):
@@ -190,7 +193,7 @@ class SshTerminalThread(threading.Thread):
                         self.stop()
 
 class InterActiveShellThread(threading.Thread):
-    
+    """初始化"""
     def __init__(self,chan,channel,log_name=None,width=90,height=40):
         super(InterActiveShellThread, self).__init__()
         self.chan = chan
