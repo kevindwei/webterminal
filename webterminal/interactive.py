@@ -97,7 +97,7 @@ def posix_shell(chan,channel,log_name=None,width=90,height=40):
                     channel_layer.send(channel, {'text': json.dumps(['stdout',smart_unicode(x)]) })#中文转换成unicode
                 #send message to monitor group
                 if log_name:#{0}-{1}-{2}.json
-                    channel_layer.send_group(u'monitor-{0}'.format(log_name.rsplit('\\')[1].rsplit('.json')[0]), {'text': json.dumps(['stdout',smart_unicode(x)]) })
+                    channel_layer.send_group(u'monitor-{0}'.format(log_name.rsplit('/')[1].rsplit('.json')[0]), {'text': json.dumps(['stdout',smart_unicode(x)]) })
             except socket.timeout:
                 pass
             except Exception,e:

@@ -53,6 +53,7 @@
                     <a href="javascript:;" class="remove" data-original-title="" title=""> </a>
                 </div>
             </div>
+
             <div class="portlet-body">
                 <form id="search">
                     <input type="search" id="q" placeholder="{% trans 'search' %}"/>
@@ -60,6 +61,7 @@
                 </form>
                 <div id="server_list" class="tree-demo" role="tree"></div>
             </div>
+
         </div>
     </div>
     <div class="col-md-9">
@@ -89,21 +91,20 @@
 <!-- elFinder JS (REQUIRED) -->
 <script src="{% static "elfinder/js/elfinder.min.js"%}"></script>
 <script type="text/javascript" src="{% static 'plugins/guacamole/all.min.js' %}"></script>
+
 <script type="application/javascript">
 
     var currentTab;
     var composeCount = 0;
     //initilize tabs
     $(function () {
-
-        //when ever any tab is clicked this method will be call
+        //when every tab is clicked， this method will be call
         $("#myTab").on("click", "a", function (e) {
-            e.preventDefault();
+            e.preventDefault();//规定阻止哪个事件的默认动作
 
-            $(this).tab('show');
+            $(this).tab('show');//显示tab
             $currentTab = $(this);
         });
-
 
         //registerComposeButtonEvent();
         registerCloseEvent();
@@ -116,18 +117,18 @@
         $(".closeTab").click(function () {
 
             //there are multiple elements which has .closeTab icon so close the tab whose close icon is clicked
-            var tabContentId = $(this).parent().attr("href");
+            var tabContentId = $(this).parent().attr("href");//
             $(this).parent().parent().remove(); //remove li of tab
             $('#myTab a:last').tab('show'); // Select first tab
             $.ajax({
                 type: "POST",
                 url: '{% url 'sshterminalkill' %}',
                 dataType: "json",
-                data: {'channel_name':$(tabContentId).attr('channel_name')},
+                data: {'channel_name':$(tabContentId).attr('channel_name')},//发送频道名字到后端
                 success: function (data) {
 
                     if (data['status']){
-                        toastr["success"](data['message']);
+                            toastr["success"](data['message']);
                     }
                 },
                 failure: function (errMsg) {
@@ -142,11 +143,11 @@
     function showTab(tabId) {
         $('#myTab a[href="#' + tabId + '"]').tab('show');
     }
+
     //return current active tab
     function getCurrentTab() {
         return currentTab;
     }
-
 
     //this will return element from current tab
     //example : if there are two tabs having  textarea with same id or same class name then when $("#someId") whill return both the text area from both tabs
@@ -157,7 +158,6 @@
 
     }
 
-
     function removeCurrentTab() {
         var tabContentId = $currentTab.attr("href");
         $currentTab.parent().remove(); //remove li of tab
@@ -166,6 +166,7 @@
     }
 
 </script>
+
 <script type="application/javascript">
     function make_terminal(element, size, ws_url,ip) {
         var term = new Terminal({
@@ -215,8 +216,8 @@
         return {socket: ws, term: term};
     }
 
-    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-    var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
+    {#var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";#}
+    {#var ws_path = ws_scheme + '://' + window.location.host + '/ws/';#}
 
     //make_terminal(document.getElementById('terminal-container1'), {rows: 40, cols: 90}, ws_path);
 //    var term = new Terminal({
@@ -229,7 +230,9 @@
 //    term.open(document.getElementById('terminal-container1'), false);
 //    term.write('\033[1;3;31mThis is the webterminal console Please select a server to connect!\033[0m')
 </script>
+
 <script type="application/javascript">
+    //jstree实现
     $("#server_list").jstree({
         core: {
             'themes': {
@@ -257,7 +260,7 @@
         state: {key: "demo2"},
         plugins: ["contextmenu", "state", "types", "search"],
         contextmenu: {
-            "items": function ($node) {
+            "items": function ($node) {//$node选中的的tree节点
                 var tree = $("#server_list").jstree(true);
                 return {
             {% if perms.webterminal.can_connect_serverinfo %}
@@ -267,7 +270,7 @@
                         "label": "{% trans 'connect' %}",
                         "action": function (obj) {
 
-                            var tabId = $node.text; //this is id on tab content div where the
+                            var tabId = $node.text; //this is id on tab content div
                             //get server ip
                             var ip = $node.original.ip;
                             var id = $node.original.id;
@@ -276,23 +279,23 @@
                                 if ($("#"+tabId).length <= 0){
                                     $('.nav-tabs').append('<li><a href="#' + tabId + '"><button class="close closeTab" type="button" >×</button>' + tabId + '</a></li>');
                                     $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');
-                                    showTab(tabId);
-                                    registerCloseEvent();
+                                    showTab(tabId);//切换tab
+                                    registerCloseEvent();//绑定关闭按钮
                                     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
                                     var ws_path = ws_scheme + '://' + window.location.host + '/ws/';
-                                    make_terminal(document.getElementById(tabId), {rows: 40, cols: 90}, ws_path, ip);
+                                    make_terminal(document.getElementById(tabId), {rows: 40, cols: 90}, ws_path, ip);//制作终端
                                 }else {
                                     showTab(tabId);
                                 }
-                            }else{
+                            }else{//非ssh协议,通过嵌套实现guacamole
                                 if ($("#"+tabId).length <= 0){
                                     $('.nav-tabs').append('<li><a href="#' + tabId + '"><button class="close closeTab" type="button" >×</button>' + tabId + '</a></li>');
-                                    <!--$('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');-->
+                                    {#<!-- $('.tab-content').append('<div class="tab-pane responsive" id="' + tabId + '"></div>');-->#}
                                     $('.tab-content').append('<div class="tab-pane responsive" id="' +tabId + '"><iframe src="/guacamole/' + id +'/" frameborder="0" scrolling="no" onload="this.height=780;this.width=1030;this.contentWindow.focus();" onmouseover="this.contentWindow.focus();"></iframe>'+ '</div>');
                                     showTab(tabId);
                                     registerCloseEvent();
                                     <!--var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";-->
-                                    <!--var ws_path = ws_scheme + '://' + window.location.host + '/guacamole/'+id+"/";-->
+                                    {#<!--var ws_path = ws_scheme + '://' + window.location.host + '/guacamole/'+id+"/";-->#}
                                     <!--connect_guacamole(document.getElementById(tabId),ws_path);-->
                                 }else {
                                     showTab(tabId);
@@ -301,6 +304,7 @@
 
                         }
                     },{% endif %}
+
                     "disconnect": {
                         "separator_before": false,
                         "separator_after": false,
@@ -383,12 +387,13 @@
             $('.vakata-context').remove();
         }
     });
+    //搜索
     $("#search").submit(function(e) {
         e.preventDefault();
         $("#server_list").jstree(true).search($("#q").val());
     });
-    function file_manager(tabId,hostname) {
 
+    function file_manager(tabId,hostname) {
                 var loct = window.location.search,
                     full_lng, locm, lng;
                     // detect language
@@ -413,7 +418,9 @@
                     });
 
             }
+
 </script>
+
 <script type="application/javascript">
     function connect_guacamole(element,ws_path){
         // Get display div from document
